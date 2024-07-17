@@ -1,0 +1,73 @@
+{% extends 'e_waste_app/static/base.html' %}
+
+{% block title %}Home - E-Waste Recycling Network{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container text-center">
+        <h1>Welcome to E-Waste Recycling Network</h1>
+        <p>Connecting individuals and organizations for responsible e-waste recycling.</p>
+    </div>
+</section>
+
+<!-- Search Section -->
+<section class="search-section py-5">
+    <div class="container">
+        <form method="GET" action="{% url 'search_results' %}">
+            <div class="row justify-content-center">
+                <div class="col-md-5">
+                    <input type="text" name="name" class="form-control mb-3" placeholder="Search by Name...">
+                </div>
+                <div class="col-md-5">
+                    <input type="text" name="zipcode" class="form-control mb-3" placeholder="Enter Zipcode">
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary btn-block mb-3">Search</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</section>
+
+<!-- Articles Section -->
+<section class="articles-section py-5">
+    <div class="container">
+        <div class="row">
+            <!-- Article 1 -->
+            <div class="col-md-4">
+                <div class="card">
+                    <img src="https://via.placeholder.com/150" class="card-img-top" alt="E-Waste Article 1">
+                    <div class="card-body">
+                        <h5 class="card-title">The Importance of E-Waste Recycling</h5>
+                        <p class="card-text">E-waste recycling is crucial for reducing environmental pollution and recovering valuable materials.</p>
+                        <a href="article1/" class="btn btn-primary">Read More</a>
+                    </div>
+                </div>
+            </div>
+            <!-- Article 2 -->
+            <div class="col-md-4">
+                <div class="card">
+                    <img src="https://via.placeholder.com/150" class="card-img-top" alt="E-Waste Article 2">
+                    <div class="card-body">
+                        <h5 class="card-title">How to Dispose of E-Waste Responsibly</h5>
+                        <p class="card-text">Learn how to dispose of your electronic waste in a responsible manner and the benefits of doing so.</p>
+                        <a href="article2/" class="btn btn-primary">Read More</a>
+                    </div>
+                </div>
+            </div>
+            <!-- Article 3 -->
+            <div class="col-md-4">
+                <div class="card">
+                    <img src="https://via.placeholder.com/150" class="card-img-top" alt="E-Waste Article 3">
+                    <div class="card-body">
+                        <h5 class="card-title">E-Waste Recycling Programs Near You</h5>
+                        <p class="card-text">Find out about various e-waste recycling programs and how you can participate in them.</p>
+                        <a href="article3/" class="btn btn-primary">Read More</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

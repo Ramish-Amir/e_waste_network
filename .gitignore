@@ -140,3 +140,4 @@ GitHub.sublime-settings
 *.iml
 .idea/misc.xml
 migrations/
+myenv/
