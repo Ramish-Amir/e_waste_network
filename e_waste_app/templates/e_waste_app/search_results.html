@@ -1,0 +1,32 @@
+<!-- templates/e_waste_app/search_results.html -->
+
+{% extends 'e_waste_app/static/base.html' %}
+
+{% block title %}Search Results - E-Waste Recycling Network{% endblock %}
+
+{% block content %}
+<section class="search-results-section py-5">
+    <div class="container">
+        <h2>Search Results</h2>
+        <div class="row">
+            {% if products %}
+                {% for product in products %}
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ product.name }}</h5>
+                            <p class="card-text">{{ product.description }}</p>
+                            <p class="card-text">Address: {{ product.address }}, {{ product.zipcode }}</p>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="col-md-12">
+                    <p>No products found.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}
