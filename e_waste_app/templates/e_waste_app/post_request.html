@@ -1,0 +1,19 @@
+{% load crispy_forms_filters %}
+
+{#{% extends "base.html" %}#}
+{% load crispy_forms_tags %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <h2>Post a Recycling Request</h2>
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form|crispy }}
+    <button type="submit" class="btn btn-primary">Post Request</button>
+  </form>
+</body>
+</html>

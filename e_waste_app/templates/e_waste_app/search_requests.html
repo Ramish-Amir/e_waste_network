@@ -1,0 +1,24 @@
+{% load crispy_forms_filters %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h2>Search Recycling Requests</h2>
+  <form method="get">
+    {{ form|crispy }}
+    <button type="submit" class="btn btn-primary">Search</button>
+  </form>
+  <h3>Results</h3>
+  <ul>
+    {% for request in results %}
+      <li>{{ request.item_type }} - {{ request.description }} - {{ request.contact_city }}</li>
+    {% empty %}
+      <li>No results found.</li>
+    {% endfor %}
+  </ul>
+</body>
+</html>
