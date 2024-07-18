@@ -1,14 +1,14 @@
+{% extends "e_waste_app/static/base.html" %}
 {% load crispy_forms_filters %}
+{% load crispy_forms_tags %}
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-<h2>Search Recycling Requests</h2>
-  <form method="get">
+{% block title %}Search Recycling Requests{% endblock %}
+
+{% block content %}
+
+    <div class="container">
+    <h2 class="text-center my-4">Search Recycling Requests</h2>
+    <form method="get">
     {{ form|crispy }}
     <button type="submit" class="btn btn-primary">Search</button>
   </form>
@@ -20,5 +20,6 @@
       <li>No results found.</li>
     {% endfor %}
   </ul>
-</body>
-</html>
+    </div>
+
+{% endblock %}
