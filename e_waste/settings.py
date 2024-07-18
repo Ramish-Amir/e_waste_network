@@ -30,9 +30,9 @@ ALLOWED_HOSTS = []
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
 EMAIL_FILE_PATH = '/e_waste_app/email'
 
-if not os.path.exists(EMAIL_FILE_PATH):
+'''if not os.path.exists(EMAIL_FILE_PATH):
     os.makedirs(EMAIL_FILE_PATH)
-
+'''
 # Application definition
 
 INSTALLED_APPS = [
