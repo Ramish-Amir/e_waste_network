@@ -1,0 +1,25 @@
+{% extends 'e_waste_app/static/base.html' %}
+
+{% block title %}Article 1 - E-Waste Recycling Network{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <img src="https://via.placeholder.com/600x300" class="card-img-top" alt="Article 1 Image">
+                <div class="card-body">
+                    <h2 class="card-title">The Importance of E-Waste Recycling</h2>
+                    <p class="card-text">
+                        E-waste recycling is crucial for reducing environmental pollution and recovering valuable materials. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.
+                    </p>
+                    <p class="card-text">
+                        Nulla vitae elit libero, a pharetra augue. Donec ullamcorper nulla non metus auctor fringilla. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Donec sed odio dui.
+                    </p>
+                    <a href="{% url 'e_waste_app:home' %}" class="btn btn-primary">Back to Home</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
