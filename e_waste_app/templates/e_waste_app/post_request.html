@@ -1,19 +1,24 @@
+{% extends "e_waste_app/static/base.html" %}
 {% load crispy_forms_filters %}
-
-{#{% extends "base.html" %}#}
 {% load crispy_forms_tags %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-    <h2>Post a Recycling Request</h2>
-  <form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form|crispy }}
-    <button type="submit" class="btn btn-primary">Post Request</button>
-  </form>
-</body>
-</html>
+
+{% block title %}Create recycling request - E-Waste Recycling Network{% endblock %}
+
+{% block content %}
+
+    <style>
+        .recycling-green {
+            color: #4CAF50; /* Recycling green color */
+        }
+    </style>
+
+    <div class="container">
+    <h2 class="text-center recycling-green my-4 py-3">Post a new Recycling Request</h2>
+      <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <button type="submit" class="btn btn-primary">Post Request</button>
+      </form>
+    </div>
+
+{% endblock %}

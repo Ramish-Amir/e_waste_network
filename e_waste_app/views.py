@@ -181,10 +181,8 @@ def search_results(request):
     }
     return render(request, 'e_waste_app/search_results.html', context)
 
-def index(request):
-    return HttpResponse("Hello, world. You're at the polls index.")
 
-
+@login_required
 def post_recycling_request(request):
     if request.method == 'POST':
         form = RecyclingRequestForm(request.POST, request.FILES, user=request.user)
