@@ -8,11 +8,11 @@ urlpatterns =[
     path(r'logout/', views.user_logout, name='logout'),
     path(r'password_reset/', views.password_reset, name='password_reset'),
     path(r'password_reset_done/', views.password_reset_done, name='password_reset_done'),
-
-    path('article1/', views.user_login, name='article1'),
-    path('article2/', views.user_login, name='article2'),
-    path('article3/', views.user_login, name='article3'),
-    path('contact/', views.user_login, name='contactus'),
-    path('search/', views.user_login, name='search_results'),  # Route for search results
+    path('aboutus/', views.aboutus, name='aboutus'),
+    path('article1/', views.article1, name='article1'),
+    path('article2/', views.article2, name='article2'),
+    path('article3/', views.article3, name='article3'),
+    path('contact/', views.contact_us, name='contactus'),
+    path('search/', views.search_results, name='search_results'),  # Route for search results
 
 ]
