@@ -1,0 +1,45 @@
+{% extends 'e_waste_app/static/base.html' %}
+{% block title %}Login - E-Waste Recycling Network{% endblock %}
+{% block content %}
+<section class="login-section py-5">
+    <div class="container d-flex justify-content-center align-items-center vh-100">
+        <div class="card" style="width: 28rem;">
+            <div class="card-body">
+                <!-- Display messages -->
+                {% if messages %}
+                <div class="messages">
+                    {% for message in messages %}
+                    <div class="alert {{ message.tags }}">
+                        {{ message }}
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                <h2 class="card-title text-center mb-4">Login</h2>
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="form-group row">
+                        <label for="{{ form.username.id_for_label }}" class="col-sm-4 col-form-label">Username</label>
+                        <div class="col-sm-8">
+                            {{ form.username }}
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="{{ form.password.id_for_label }}" class="col-sm-4 col-form-label">Password</label>
+                        <div class="col-sm-8">
+                            {{ form.password }}
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-sm-8 offset-sm-4">
+                            <button type="submit" class="btn btn-primary btn-block">Login</button>
+                        </div>
+                    </div>
+                </form>
+                <p class="text-center">Don't have an account? <a href="{% url 'e_waste_app:register' %}">Register here</a></p>
+                <p class="text-center">Forget password? <a href="{% url 'e_waste_app:password_reset' %}">Forget Password</a></p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
