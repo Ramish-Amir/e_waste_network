@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/5.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
-
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -26,8 +26,12 @@ SECRET_KEY = 'django-insecure-z3yrs^ei#^!m)0f5sqki0))4lm%gs49ya_06#6hs-*9u&o7tg3
 DEBUG = True
 
 ALLOWED_HOSTS = []
+EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
+EMAIL_FILE_PATH = '/e_waste_app/email'
 
-
+'''if not os.path.exists(EMAIL_FILE_PATH):
+    os.makedirs(EMAIL_FILE_PATH)
+'''
 # Application definition
 
 INSTALLED_APPS = [
@@ -37,10 +41,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'crispy_forms',  # Add this line for Django Crispy Forms
-    'crispy_bootstrap4',  # Add this line for Bootstrap4 theme
-    'e_waste_app',
+    'e_waste_app.apps.EWasteAppConfig',
+    'crispy_forms',
+    'crispy_bootstrap4',
 ]
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -57,7 +64,8 @@ ROOT_URLCONF = 'e_waste.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates']
+        ,
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -128,6 +136,3 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-# Crispy Forms settings
-CRISPY_TEMPLATE_PACK = 'bootstrap4'
