@@ -44,7 +44,7 @@ class Product(models.Model):
         return self.name
 
 
-class RecyclingRequest(models.Model):
+class RecycleItem(models.Model):
     CATEGORY_CHOICES = [
         ('consumer_electronics', 'Consumer Electronics'),
         ('home_appliances', 'Home Appliances'),
@@ -59,8 +59,8 @@ class RecyclingRequest(models.Model):
     description = models.TextField()
     condition = models.CharField(max_length=100)
     category = models.CharField(max_length=50, choices=CATEGORY_CHOICES)
-    created_at = models.DateField(auto_now_add=True)
-    updated_at = models.DateField(auto_now=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     is_active = models.BooleanField(default=True)
     email = models.EmailField(blank=True, null=True)
     phone = models.CharField(max_length=15, blank=True, null=True)
@@ -69,7 +69,7 @@ class RecyclingRequest(models.Model):
     province = models.CharField(max_length=50, blank=True, null=True)
     postal_code = models.CharField(max_length=20, blank=True, null=True)
     country = models.CharField(max_length=50, blank=True, null=True)
-    image = models.ImageField(upload_to='recycling_requests/', blank=True, null=True)
+    image = models.ImageField(upload_to='recycling_items/', blank=True, null=True)
 
     def __str__(self):
         return f'{self.item_type} - {self.category}'

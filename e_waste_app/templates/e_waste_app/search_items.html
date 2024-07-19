@@ -1,0 +1,40 @@
+{% extends "e_waste_app/static/base.html" %}
+{% load crispy_forms_filters %}
+{% load crispy_forms_tags %}
+
+{% block title %}Search Recycling Requests{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <h2 class="text-center my-4">Search Recycling Requests</h2>
+    <form method="get">
+        <div class="form-row align-items-top">
+            <div class="col">
+                {{ form.keyword|as_crispy_field }}
+            </div>
+            <div class="col">
+                {{ form.category|as_crispy_field }}
+            </div>
+            <div class="col">
+                {{ form.location|as_crispy_field }}
+            </div>
+            <div class="col">
+                {{ form.sort_by|as_crispy_field }}
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-primary btn-block">Search</button>
+            </div>
+        </div>
+    </form>
+    <h3 class="my-4">Results</h3>
+    <ul>
+        {% for item in results %}
+            <li>{{ item.item_type }} - {{ item.description }} - {{ item.city }} - {{ item.created_at }}</li>
+        {% empty %}
+            <li>No results found.</li>
+        {% endfor %}
+    </ul>
+</div>
+
+{% endblock %}
