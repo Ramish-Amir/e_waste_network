@@ -13,12 +13,11 @@ from .forms import LoginForm, RegisterForm, PasswordResetForm
 from django.utils import timezone
 from django.contrib import messages
 from .forms import ContactForm
-from .models import Product, Member, RecyclingRequest
-
-from django.http import HttpResponse
+from .models import Product, Member, RecycleItem
+from django.db.models import Q
 from django.shortcuts import render, redirect
-from .recycleForms import RecyclingRequestForm, RecyclingRequestSearchForm
-from .models import RecyclingRequest
+from .recycleForms import AddRecycleItemForm, SearchRecycleItemsForm
+from .models import RecycleItem
 
 
 # Create your views here.
@@ -183,9 +182,9 @@ def search_results(request):
 
 
 @login_required
-def post_recycling_request(request):
+def add_recycle_item(request):
     if request.method == 'POST':
-        form = RecyclingRequestForm(request.POST, request.FILES)
+        form = AddRecycleItemForm(request.POST, request.FILES)
 
         if form.is_valid():
             # Create instance but don't save to database yet
@@ -204,26 +203,32 @@ def post_recycling_request(request):
 
             # Save the instance to the database
             recycling_request.save()
-            return redirect('e_waste_app:search_recycling_requests')
+            return redirect('e_waste_app:view_recycle_items')
     else:
-        form = RecyclingRequestForm()
-    return render(request, 'e_waste_app/post_request.html', {'form': form})
+        form = AddRecycleItemForm()
+    return render(request, 'e_waste_app/add_item.html', {'form': form})
 
 
-def search_recycling_requests(request):
-    form = RecyclingRequestSearchForm(request.GET or None)
-    results = RecyclingRequest.objects.all()
+def view_recycle_items(request):
+    form = SearchRecycleItemsForm(request.GET or None)
+    results = RecycleItem.objects.all()
 
     if form.is_valid():
         keyword = form.cleaned_data.get('keyword')
         category = form.cleaned_data.get('category')
-        city = form.cleaned_data.get('city')
+        location = form.cleaned_data.get('location')
+        sort_by = form.cleaned_data.get('sort_by')
 
         if keyword:
-            results = results.filter(description__icontains=keyword)
+            results = results.filter(Q(description__icontains=keyword) | Q(item_type__icontains=keyword))
         if category:
             results = results.filter(category=category)
-        if city:
-            results = results.filter(contact_city__icontains=city)
+        if location:
+            results = results.filter(Q(postal_code=location) | Q(address__icontains=location)
+                                     | Q(city__icontains=location) | Q(country__icontains=location)
+                                     | Q(province__icontains=location))
 
-    return render(request, 'e_waste_app/search_requests.html', {'form': form, 'results': results})
+        if sort_by:
+            results = results.order_by(sort_by)
+
+    return render(request, 'e_waste_app/search_items.html', {'form': form, 'results': results})

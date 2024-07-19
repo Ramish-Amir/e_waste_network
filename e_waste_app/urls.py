@@ -15,6 +15,6 @@ urlpatterns =[
     path('article3/', views.article3, name='article3'),
     path('contact/', views.contact_us, name='contactus'),
     path('search/', views.search_results, name='search_results'),  # Route for search results
-    path('post_request/', views.post_recycling_request, name='post_recycling_request'),
-    path('search_requests/', views.search_recycling_requests, name='search_recycling_requests'),
+    path('add_recycle_item/', views.add_recycle_item, name='add_recycle_item'),
+    path('view_recycle_items/', views.view_recycle_items, name='view_recycle_items'),
 ]
