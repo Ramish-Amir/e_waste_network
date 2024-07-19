@@ -13,7 +13,7 @@ from .forms import LoginForm, RegisterForm, PasswordResetForm
 from django.utils import timezone
 from django.contrib import messages
 from .forms import ContactForm
-from .models import Product
+from .models import Product, Member, RecyclingRequest
 
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
@@ -185,12 +185,28 @@ def search_results(request):
 @login_required
 def post_recycling_request(request):
     if request.method == 'POST':
-        form = RecyclingRequestForm(request.POST, request.FILES, user=request.user)
+        form = RecyclingRequestForm(request.POST, request.FILES)
+
         if form.is_valid():
-            form.save()
+            # Create instance but don't save to database yet
+            recycling_request = form.save(commit=False)
+            current_member = Member.objects.get(username=request.user)
+            recycling_request.user = current_member
+            if form.cleaned_data['user_profile_contact']:
+                print("USER PROFILE CONTACT")
+                recycling_request.email = current_member.email
+                recycling_request.phone = current_member.phone_number
+                recycling_request.address = current_member.address
+                recycling_request.city = current_member.city
+                recycling_request.province = current_member.province
+                recycling_request.postal_code = current_member.postal_code
+                recycling_request.country = current_member.country
+
+            # Save the instance to the database
+            recycling_request.save()
             return redirect('e_waste_app:search_recycling_requests')
     else:
-        form = RecyclingRequestForm(user=request.user)
+        form = RecyclingRequestForm()
     return render(request, 'e_waste_app/post_request.html', {'form': form})
 
 
