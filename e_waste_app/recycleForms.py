@@ -5,34 +5,32 @@ from crispy_forms.layout import Submit
 
 
 class RecyclingRequestForm(forms.ModelForm):
-    use_contact_details = forms.BooleanField(required=False)
+    user_profile_contact = forms.BooleanField(initial=False, required=False,
+                                              label="Use contact details from my profile (Leave the next fields blank "
+                                                    "if you choose this option)")
 
     class Meta:
         model = RecyclingRequest
         fields = [
-            'item_type', 'description', 'condition', 'location', 'category',
-            'use_contact_details', 'image'
+            'item_type', 'description', 'condition', 'category',
+            'image', 'phone', 'address', 'city', 'province', 'postal_code', 'country'
         ]
 
     def __init__(self, *args, **kwargs):
-        self.user = kwargs.pop('user', None)
-        super().__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.helper.add_input(Submit('submit', 'Post Request'))
+        super(RecyclingRequestForm, self).__init__(*args, **kwargs)
 
-    def save(self, commit=True):
-        instance = super().save(commit=False)
-        if self.cleaned_data['use_contact_details']:
-            instance.contact_email = self.user.email
-            instance.contact_phone = self.user.phone_number
-            instance.contact_address = self.user.address
-            instance.contact_city = self.user.city
-            instance.contact_province = self.user.province
-            instance.contact_postal_code = self.user.postal_code
-            instance.contact_country = self.user.country
-        if commit:
-            instance.save()
-        return instance
+        # Reorder fields
+        self.fields['user_profile_contact'] = self.fields.pop('user_profile_contact')
+        fields_order = [
+            'item_type',
+            'description',
+            'condition',
+            'category',
+            'image',
+            'user_profile_contact',
+            'phone', 'address', 'city', 'province', 'postal_code', 'country'
+        ]
+        self.order_fields(fields_order)
 
 
 class RecyclingRequestSearchForm(forms.Form):

@@ -1,7 +1,6 @@
 from django.contrib.auth.models import User
 from django.db import models
 from django.contrib.auth.models import User
-from django.conf import settings
 
 # Create your models here.
 
@@ -55,25 +54,22 @@ class RecyclingRequest(models.Model):
         ('miscellaneous_electronics', 'Miscellaneous Electronics'),
     ]
 
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True)
+    user = models.ForeignKey(Member, on_delete=models.CASCADE, null=True, blank=True)
     item_type = models.CharField(max_length=50)
     description = models.TextField()
     condition = models.CharField(max_length=100)
-    location = models.CharField(max_length=100)
     category = models.CharField(max_length=50, choices=CATEGORY_CHOICES)
-    date_posted = models.DateField(auto_now_add=True)
-    date_updated = models.DateField(auto_now=True)
+    created_at = models.DateField(auto_now_add=True)
+    updated_at = models.DateField(auto_now=True)
     is_active = models.BooleanField(default=True)
-    use_contact_details = models.BooleanField(default=False)
-    contact_email = models.EmailField(blank=True, null=True)
-    contact_phone = models.CharField(max_length=15, blank=True, null=True)
-    contact_address = models.CharField(max_length=300, blank=True, null=True)
-    contact_city = models.CharField(max_length=50, blank=True, null=True)
-    contact_province = models.CharField(max_length=50, blank=True, null=True)
-    contact_postal_code = models.CharField(max_length=20, blank=True, null=True)
-    contact_country = models.CharField(max_length=50, blank=True, null=True)
+    email = models.EmailField(blank=True, null=True)
+    phone = models.CharField(max_length=15, blank=True, null=True)
+    address = models.CharField(max_length=300, blank=True, null=True)
+    city = models.CharField(max_length=50, blank=True, null=True)
+    province = models.CharField(max_length=50, blank=True, null=True)
+    postal_code = models.CharField(max_length=20, blank=True, null=True)
+    country = models.CharField(max_length=50, blank=True, null=True)
     image = models.ImageField(upload_to='recycling_requests/', blank=True, null=True)
 
     def __str__(self):
         return f'{self.item_type} - {self.category}'
-
