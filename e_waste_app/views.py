@@ -1,18 +1,22 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.contrib.auth.password_validation import CommonPasswordValidator
 from django.contrib.auth.tokens import default_token_generator
+from django.contrib.auth.views import PasswordResetConfirmView, PasswordResetCompleteView
 from django.contrib.sites.shortcuts import get_current_site
+from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
-from django.contrib.auth import views as auth_views, authenticate, login, logout
+from django.contrib.auth import views as auth_views, authenticate, login, logout, get_user_model
 from django.contrib import messages
 from django.template.loader import render_to_string
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.utils.encoding import force_bytes
-from django.utils.http import urlsafe_base64_encode
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.views.generic import FormView
 
-from .forms import LoginForm, RegisterForm, PasswordResetForm
+from .forms import LoginForm, RegisterForm, PasswordResetForm, PasswordResetConfirmForm
 from django.utils import timezone
 
 from django.shortcuts import render, redirect
@@ -180,3 +184,95 @@ def search_results(request):
         'products': products
     }
     return render(request, 'e_waste_app/search_results.html', context)
+
+
+def _validate_password(password):
+    print('password', password)
+    if password is not None:
+        if len(password) < 8:
+            raise ValidationError('Password must be at least 8 characters long')
+        if password.isdigit():
+            raise ValidationError('Password must not contain only numbers')
+        common_passwords = ['qwerty@123', '12345678']
+        if password in common_passwords:
+            raise ValidationError('Password cant be commonly used password')
+        validators = [CommonPasswordValidator()]
+        for validator in validators:
+            validator.validate(password)
+    else:
+        raise ValidationError('Password is empty')
+
+
+class CustomPasswordResetConfirmView(FormView):
+    template_name = 'e_waste_app/password_reset_confirm.html'
+    success_url = reverse_lazy('e_waste_app:password_reset_complete')
+    form_class = PasswordResetConfirmForm
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        uidb64 = self.kwargs.get('uidb64')
+        token = self.kwargs.get('token')
+        UserModel = get_user_model()
+        try:
+            uid = urlsafe_base64_decode(uidb64).decode()
+            user = UserModel.objects.get(pk=uid)
+            print('user:',user.email)
+        except (TypeError, ValueError, OverflowError, UserModel.DoesNotExist):
+            user = None
+        kwargs['user'] = user  # Provide the user to the form
+        return kwargs
+
+    def form_valid(self, form):
+        uidb64 = self.kwargs.get('uidb64')
+        token = self.kwargs.get('token')
+        UserModel = get_user_model()
+        print('uidb64: ',uidb64)
+        print('token: ', token)
+        try:
+            uid = urlsafe_base64_decode(uidb64).decode()
+            user = UserModel.objects.get(pk=uid)
+        except (TypeError, ValueError, OverflowError, UserModel.DoesNotExist):
+            user = None
+
+        if user is not None and default_token_generator.check_token(user, token):
+            password1 = form.cleaned_data.get('new_password1')
+            password2 = form.cleaned_data.get('new_password2')
+            print('--new_password1:', password1)  # Debugging line
+            print('--new_password2:', password2)  # Debugging line
+
+            if password1 != password2:
+                form.add_error(None, 'Passwords do not match')
+                return self.form_invalid(form)
+
+            try:
+                print('password1:', password1)  # Debugging line
+                print('password2:', password2)  # Debugging line
+
+            except ValidationError as e:
+                form.add_error(None, e.message)
+                return self.form_invalid(form)
+
+            user.set_password(password1)
+            user.save()
+            return super().form_valid(form)
+        else:
+            form.add_error(None, 'Invalid token or user ID')
+            return self.form_invalid(form)
+
+
+
+    def form_invalid(self, form):
+        return render(self.request, self.template_name, {'form': form,
+                                                         'uid': self.kwargs['uidb64'],
+                                                         'token': self.kwargs['token']})
+
+    def get_context_data(self, **kwargs):
+        # Add 'uidb64' and 'token' to the context in case of successful form submission
+        context = super().get_context_data(**kwargs)
+        context['uid'] = self.kwargs['uidb64']
+        context['token'] = self.kwargs['token']
+        return context
+
+
+class CustomPasswordResetCompleteView(PasswordResetCompleteView):
+    template_name = 'e_waste_app/password_reset_complete.html'

@@ -1,4 +1,8 @@
 from django import forms
+from django.contrib.auth.forms import SetPasswordForm
+from django.contrib.auth.password_validation import CommonPasswordValidator
+from django.core.exceptions import ValidationError
+
 from .models import ContactMessage
 from django.contrib.auth.models import User
 
@@ -34,10 +38,46 @@ class RegisterForm(forms.Form):
         user = User.objects.create_user(username=username, email=email, password=password)
         return user
 
+
 class ContactForm(forms.ModelForm):
     class Meta:
         model = ContactMessage
         fields = ['name', 'email', 'message']
 
+
 class PasswordResetForm(forms.Form):
-    email = forms.EmailField()
+    email = forms.EmailField(label='Enter your email address')
+
+
+class PasswordResetConfirmForm(SetPasswordForm):
+    def __init__(self, *args, **kwargs):
+        # Extract user if present
+        user = kwargs.pop('user', None)
+        super().__init__(user=user, *args, **kwargs)
+        #super().__init__(*args, **kwargs)
+        self.fields['new_password1'].widget.attrs.update({'class': 'form-control', 'placeholder': 'New password'})
+        self.fields['new_password2'].widget.attrs.update({'class': 'form-control', 'placeholder': 'Confirm new password'})
+
+    def clean_new_password1(self):
+        password = self.cleaned_data.get('new_password1')
+        if password:
+            self._validate_password(password)
+        return password
+
+    def _validate_password(self, password):
+        if len(password) < 8:
+            raise ValidationError('Password must be at least 8 characters long')
+
+        if password.isdigit():
+            raise ValidationError('Password must not contain only numbers')
+
+        common_passwords = ['qwerty@123', '12345678']
+        if password in common_passwords:
+            raise ValidationError('Password can’t be a commonly used password')
+
+        '''validators = [CommonPasswordValidator()]
+        for validator in validators:
+            try:
+                validator.validate(password)
+            except ValidationError as e:
+                raise ValidationError(e.message)'''

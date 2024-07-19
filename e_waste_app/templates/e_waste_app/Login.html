@@ -1,8 +1,12 @@
 {% extends 'e_waste_app/static/base.html' %}
+{% load static %}
 {% block title %}Login - E-Waste Recycling Network{% endblock %}
 {% block content %}
 <section class="login-section py-5">
-    <div class="container d-flex justify-content-center align-items-center vh-100">
+    <div class="container d-flex justify-content-end align-items-center vh-50">
+        <div class="d-flex flex-column align-items-end" style="height: 22rem; margin-right: 80px;">
+        <img src="https://media.istockphoto.com/id/1372577388/photo/old-electronic-devices-on-a-dark-background-the-concept-of-recycling-and-disposal-of.jpg?s=612x612&w=0&k=20&c=RGm3eCA76Y_IJJYGCLWS9acSR39Gb7iqsC_DIhJyG2g=" alt="e_waste" style="max-height: 352px"/>
+        </div>
         <div class="card" style="width: 28rem;">
             <div class="card-body">
                 <!-- Display messages -->
@@ -41,5 +45,6 @@
             </div>
         </div>
     </div>
+
 </section>
 {% endblock %}
