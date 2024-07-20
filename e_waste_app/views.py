@@ -129,15 +129,19 @@ def password_reset(request):
             user = User.objects.get(email=email)
             if user:
                 subject = "Password Reset Request"
-                email_template_name = "e_waste_app/password_reset_email.txt"
+                #email_template_name = "e_waste_app/password_reset_email.txt"
+                email_template_name = "e_waste_app/password_rest_email.html"
                 c = {
                     'email': user.email,
                     'domain': get_current_site(request).domain,
+                    'site_name': 'E Waste Network',
                     'uid': urlsafe_base64_encode(force_bytes(user.pk)),
                     'token': default_token_generator.make_token(user),
+                    'protocol': 'https' if request.is_secure() else 'http',
+                    'username': user.username
                 }
                 email = render_to_string(email_template_name, c)
-                send_mail(subject, email, "no-reply@e_waste_network.com", [user.email])
+                send_mail(subject, email, "ewastenetwork@gmail.com", [user.email])
             return redirect('e_waste_app:password_reset_done')
         else:
             return render(request, 'e_waste_app/Password_reset.html', {'PasswordResetForm': PasswordResetForm()})
