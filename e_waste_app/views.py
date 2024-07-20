@@ -1,4 +1,7 @@
+from http.client import HTTPResponse
+
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.contrib.auth.password_validation import CommonPasswordValidator
 from django.contrib.auth.tokens import default_token_generator
@@ -13,7 +16,7 @@ from django.template.loader import render_to_string
 from django.urls import reverse, reverse_lazy
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
-from django.views.generic import FormView
+from django.views.generic import FormView, ListView, UpdateView, DeleteView
 from .forms import PasswordResetConfirmForm, ProfileForm
 from .forms import LoginForm, RegisterForm, PasswordResetForm
 from django.utils import timezone
@@ -26,6 +29,11 @@ from .recycleForms import AddRecycleItemForm, SearchRecycleItemsForm
 
 
 # Create your views here.
+
+
+# Convert CATEGORY_CHOICES to a dictionary
+category_choices_dict = dict(RecycleItem.CATEGORY_CHOICES)
+condition_choices_dict = dict(RecycleItem.CONDITION_CHOICES)
 
 
 def profile(request):
@@ -296,8 +304,8 @@ def add_recycle_item(request):
             recycling_request = form.save(commit=False)
             current_member = Member.objects.get(username=request.user)
             recycling_request.user = current_member
+
             if form.cleaned_data['user_profile_contact']:
-                print("USER PROFILE CONTACT")
                 recycling_request.email = current_member.email
                 recycling_request.phone = current_member.phone_number
                 recycling_request.address = current_member.address
@@ -316,7 +324,7 @@ def add_recycle_item(request):
 
 def view_recycle_items(request):
     form = SearchRecycleItemsForm(request.GET or None)
-    results = RecycleItem.objects.all().order_by('-created_at')
+    results = RecycleItem.objects.filter(is_active=True).order_by('-created_at')
 
     if form.is_valid():
         keyword = form.cleaned_data.get('keyword')
@@ -339,10 +347,6 @@ def view_recycle_items(request):
         if sort_by:
             results = results.order_by(sort_by)
 
-    # Convert CATEGORY_CHOICES to a dictionary
-    category_choices_dict = dict(RecycleItem.CATEGORY_CHOICES)
-    condition_choices_dict = dict(RecycleItem.CONDITION_CHOICES)
-
     context = {
         'form': form,
         'results': results,
@@ -351,3 +355,40 @@ def view_recycle_items(request):
     }
 
     return render(request, 'e_waste_app/search_items.html', context)
+
+
+class MyItemsView(LoginRequiredMixin, ListView):
+    template_name = 'e_waste_app/my_items.html'
+    context_object_name = 'my_items'
+    model = RecycleItem
+    ordering = ['-created_at']
+
+    def get_queryset(self):
+        current_member = Member.objects.get(username=self.request.user)
+        return RecycleItem.objects.filter(user=current_member).order_by('-created_at')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        my_items = context['my_items']
+        context['active_items'] = my_items.filter(is_active=True)
+        context['inactive_items'] = my_items.filter(is_active=False)
+        context['category_choices'] = category_choices_dict
+        context['condition_choices'] = condition_choices_dict
+        return context
+
+
+class MarkAsUnavailableView(LoginRequiredMixin, UpdateView):
+    model = RecycleItem
+    fields = []
+    success_url = reverse_lazy('e_waste_app:view_my_items')
+
+    def form_valid(self, form):
+        item = form.save(commit=False)
+        item.is_active = False
+        item.save()
+        return super().form_valid(form)
+
+
+class DeleteItemView(LoginRequiredMixin, DeleteView):
+    model = RecycleItem
+    success_url = reverse_lazy('e_waste_app:view_my_items')

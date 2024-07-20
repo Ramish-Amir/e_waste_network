@@ -26,6 +26,11 @@ urlpatterns = [
     path('contact/', views.contact_us, name='contactus'),
     path('profile/', views.profile, name='profile'),
     path('search/', views.search_results, name='search_results'),
+
+    # Recycle items urls
     path('add_recycle_item/', views.add_recycle_item, name='add_recycle_item'),
-    path(r'recycle_items/', views.view_recycle_items, name='view_recycle_items'),
+    path('recycle_items/', views.view_recycle_items, name='view_recycle_items'),
+    path('my_items/', views.MyItemsView.as_view(), name='view_my_items'),
+    path('mark_unavailable/<int:pk>/', views.MarkAsUnavailableView.as_view(), name='mark_unavailable'),
+    path('delete_item/<int:pk>/', views.DeleteItemView.as_view(), name='delete_item'),
 ]
