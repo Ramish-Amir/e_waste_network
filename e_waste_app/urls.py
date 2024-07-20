@@ -33,4 +33,7 @@ urlpatterns = [
     path('my_items/', views.MyItemsView.as_view(), name='view_my_items'),
     path('mark_unavailable/<int:pk>/', views.MarkAsUnavailableView.as_view(), name='mark_unavailable'),
     path('delete_item/<int:pk>/', views.DeleteItemView.as_view(), name='delete_item'),
+
+    #UserHistoryDashbords
+    path('dashboard/', views.dashboard, name='dashboard'),
 ]
