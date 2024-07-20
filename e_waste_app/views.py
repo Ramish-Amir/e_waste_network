@@ -217,12 +217,15 @@ def view_recycle_items(request):
         keyword = form.cleaned_data.get('keyword')
         category = form.cleaned_data.get('category')
         location = form.cleaned_data.get('location')
+        condition = form.cleaned_data.get('condition')
         sort_by = form.cleaned_data.get('sort_by')
 
         if keyword:
             results = results.filter(Q(description__icontains=keyword) | Q(item_type__icontains=keyword))
         if category:
-            results = results.filter(category=category)
+            results = results.filter(category__search=category)
+        if condition:
+            results = results.filter(condition=condition)
         if location:
             results = results.filter(Q(postal_code=location) | Q(address__icontains=location)
                                      | Q(city__icontains=location) | Q(country__icontains=location)
@@ -233,11 +236,13 @@ def view_recycle_items(request):
 
     # Convert CATEGORY_CHOICES to a dictionary
     category_choices_dict = dict(RecycleItem.CATEGORY_CHOICES)
+    condition_choices_dict = dict(RecycleItem.CONDITION_CHOICES)
 
     context = {
         'form': form,
         'results': results,
         'category_choices': category_choices_dict,
+        'condition_choices': condition_choices_dict,
     }
 
     return render(request, 'e_waste_app/search_items.html', context)

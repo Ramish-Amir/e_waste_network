@@ -36,6 +36,7 @@ class AddRecycleItemForm(forms.ModelForm):
 class SearchRecycleItemsForm(forms.Form):
     keyword = forms.CharField(required=False, label='')
     category = forms.ChoiceField(choices=[('', 'Categories (All)')] + RecycleItem.CATEGORY_CHOICES, required=False, label='')
+    condition = forms.ChoiceField(choices=[('', 'Condition (All)')] + RecycleItem.CONDITION_CHOICES, required=False, label='')
     location = forms.CharField(required=False, label='')
     sort_by = forms.ChoiceField(
         choices=[
@@ -51,6 +52,7 @@ class SearchRecycleItemsForm(forms.Form):
         super().__init__(*args, **kwargs)
         self.fields['keyword'].widget.attrs.update({'placeholder': 'Enter search keyword'})
         self.fields['category'].widget.attrs.update({'placeholder': 'Category'})
+        self.fields['condition'].widget.attrs.update({'placeholder': 'Condition'})
         self.fields['location'].widget.attrs.update({'placeholder': 'Location (postal code, city, province, country...)'})
         self.fields['sort_by'].widget.attrs.update({'placeholder': 'Sort By'})
 

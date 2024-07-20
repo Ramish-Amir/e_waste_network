@@ -57,6 +57,9 @@
                 {{ form.category|as_crispy_field }}
             </div>
             <div class="col">
+                {{ form.condition|as_crispy_field }}
+            </div>
+            <div class="col">
                 {{ form.location|as_crispy_field }}
             </div>
             <div class="col">
@@ -81,7 +84,7 @@
                         <h5 class="card-title">{{ item.item_type }}</h5>
                         <p class="card-text truncate-multiline">{{ item.description }}</p>
                         <span class="badge badge-primary">{{ category_choices|get_item:item.category }}</span>
-                        <span class="badge badge-secondary">{{ item.condition }}</span>
+                        <span class="badge badge-secondary">{{ condition_choices|get_item:item.condition }}</span>
                     </div>
                     <div class="card-footer">
                         <div class="badge-condition">
