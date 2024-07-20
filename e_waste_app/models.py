@@ -54,10 +54,16 @@ class RecycleItem(models.Model):
         ('miscellaneous_electronics', 'Miscellaneous Electronics'),
     ]
 
+    CONDITION_CHOICES = [
+        ('working', 'Working'),
+        ('not_working', 'Not Working'),
+        ('partial_working', 'Partial Working'),
+    ]
+
     user = models.ForeignKey(Member, on_delete=models.CASCADE, null=True, blank=True)
     item_type = models.CharField(max_length=50)
     description = models.TextField()
-    condition = models.CharField(max_length=100)
+    condition = models.CharField(max_length=50, choices=CONDITION_CHOICES)
     category = models.CharField(max_length=50, choices=CATEGORY_CHOICES)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
