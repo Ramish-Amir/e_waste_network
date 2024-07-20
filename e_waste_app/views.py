@@ -2,27 +2,27 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.auth.password_validation import CommonPasswordValidator
 from django.contrib.auth.tokens import default_token_generator
-from django.contrib.auth.views import PasswordResetConfirmView, PasswordResetCompleteView
+from django.contrib.auth.views import PasswordResetCompleteView
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
 from django.http import HttpResponseRedirect
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth import views as auth_views, authenticate, login, logout, get_user_model
-from django.contrib import messages
+from django.shortcuts import get_object_or_404
+from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.template.loader import render_to_string
 from django.urls import reverse, reverse_lazy
 from django.utils.encoding import force_bytes
-from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.views.generic import FormView
-
-from .forms import LoginForm, RegisterForm, PasswordResetForm, PasswordResetConfirmForm, ProfileForm
+from .forms import PasswordResetConfirmForm, ProfileForm
+from .forms import LoginForm, RegisterForm, PasswordResetForm
 from django.utils import timezone
-
-from django.shortcuts import render, redirect
 from django.contrib import messages
 from .forms import ContactForm
-from .models import Product, Member  # Assuming Product is your model
+from .models import Product, Member, RecycleItem
+from django.db.models import Q
+from django.shortcuts import render, redirect
+from .recycleForms import AddRecycleItemForm, SearchRecycleItemsForm
 
 
 # Create your views here.
@@ -49,8 +49,6 @@ def user_register(request):
     if request.method == 'POST':
         form = RegisterForm(request.POST)
         if form.is_valid():
-            #form.save()
-            #print("this is username",form.cleaned_data)
             username = form.cleaned_data.get('username')
             email = form.cleaned_data.get('email')
             user_password = form.cleaned_data.get('password')
@@ -64,9 +62,8 @@ def user_register(request):
                 messages.error(request, 'Passwords do not match')
                 print('Password dont match', user_password, user_confirm_password)
                 return render(request, 'e_waste_app/Register.html', {'form': form})
-            #user = User.objects.create_user(username=username, email=email, password=user_password)
+
             member = Member.objects.create_user(username=username, email=email, password=user_password)
-            #user.save()
             member.save()
             messages.success(request, f'account created for {username}')
             return redirect('e_waste_app:login')
@@ -120,7 +117,6 @@ def user_login(request):
 def user_logout(request):
     logout(request)
     return HttpResponseRedirect(reverse('e_waste_app:logout'))
-    #return HttpResponseRedirect(reverse('myapp:index'))
 
 
 def password_reset(request):
@@ -288,3 +284,70 @@ class CustomPasswordResetConfirmView(FormView):
 
 class CustomPasswordResetCompleteView(PasswordResetCompleteView):
     template_name = 'e_waste_app/password_reset_complete.html'
+
+
+@login_required
+def add_recycle_item(request):
+    if request.method == 'POST':
+        form = AddRecycleItemForm(request.POST, request.FILES)
+
+        if form.is_valid():
+            # Create instance but don't save to database yet
+            recycling_request = form.save(commit=False)
+            current_member = Member.objects.get(username=request.user)
+            recycling_request.user = current_member
+            if form.cleaned_data['user_profile_contact']:
+                print("USER PROFILE CONTACT")
+                recycling_request.email = current_member.email
+                recycling_request.phone = current_member.phone_number
+                recycling_request.address = current_member.address
+                recycling_request.city = current_member.city
+                recycling_request.province = current_member.province
+                recycling_request.postal_code = current_member.postal_code
+                recycling_request.country = current_member.country
+
+            # Save the instance to the database
+            recycling_request.save()
+            return redirect('e_waste_app:view_recycle_items')
+    else:
+        form = AddRecycleItemForm()
+    return render(request, 'e_waste_app/add_item.html', {'form': form})
+
+
+def view_recycle_items(request):
+    form = SearchRecycleItemsForm(request.GET or None)
+    results = RecycleItem.objects.all().order_by('-created_at')
+
+    if form.is_valid():
+        keyword = form.cleaned_data.get('keyword')
+        category = form.cleaned_data.get('category')
+        location = form.cleaned_data.get('location')
+        condition = form.cleaned_data.get('condition')
+        sort_by = form.cleaned_data.get('sort_by')
+
+        if keyword:
+            results = results.filter(Q(description__icontains=keyword) | Q(item_type__icontains=keyword))
+        if category:
+            results = results.filter(category=category)
+        if condition:
+            results = results.filter(condition=condition)
+        if location:
+            results = results.filter(Q(postal_code=location) | Q(address__icontains=location)
+                                     | Q(city__icontains=location) | Q(country__icontains=location)
+                                     | Q(province__icontains=location))
+
+        if sort_by:
+            results = results.order_by(sort_by)
+
+    # Convert CATEGORY_CHOICES to a dictionary
+    category_choices_dict = dict(RecycleItem.CATEGORY_CHOICES)
+    condition_choices_dict = dict(RecycleItem.CONDITION_CHOICES)
+
+    context = {
+        'form': form,
+        'results': results,
+        'category_choices': category_choices_dict,
+        'condition_choices': condition_choices_dict,
+    }
+
+    return render(request, 'e_waste_app/search_items.html', context)

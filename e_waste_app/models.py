@@ -1,5 +1,8 @@
 from django.contrib.auth.models import User
 from django.db import models
+from django.contrib.auth.models import User
+
+# Create your models here.
 
 
 class Member(User):
@@ -39,3 +42,40 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class RecycleItem(models.Model):
+    CATEGORY_CHOICES = [
+        ('consumer_electronics', 'Consumer Electronics'),
+        ('home_appliances', 'Home Appliances'),
+        ('office_equipment', 'Office Equipment'),
+        ('medical_devices', 'Medical Devices'),
+        ('industrial_equipment', 'Industrial Equipment'),
+        ('miscellaneous_electronics', 'Miscellaneous Electronics'),
+    ]
+
+    CONDITION_CHOICES = [
+        ('working', 'Working'),
+        ('not_working', 'Not Working'),
+        ('partial_working', 'Partial Working'),
+    ]
+
+    user = models.ForeignKey(Member, on_delete=models.CASCADE, null=True, blank=True)
+    item_type = models.CharField(max_length=50)
+    description = models.TextField()
+    condition = models.CharField(max_length=50, choices=CONDITION_CHOICES)
+    category = models.CharField(max_length=50, choices=CATEGORY_CHOICES)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    is_active = models.BooleanField(default=True)
+    email = models.EmailField(blank=True, null=True)
+    phone = models.CharField(max_length=15, blank=True, null=True)
+    address = models.CharField(max_length=300, blank=True, null=True)
+    city = models.CharField(max_length=50, blank=True, null=True)
+    province = models.CharField(max_length=50, blank=True, null=True)
+    postal_code = models.CharField(max_length=20, blank=True, null=True)
+    country = models.CharField(max_length=50, blank=True, null=True)
+    image = models.ImageField(upload_to='recycling_items/', blank=True, null=True)
+
+    def __str__(self):
+        return f'{self.item_type} - {self.category}'
