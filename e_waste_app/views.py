@@ -1,3 +1,4 @@
+from datetime import timedelta
 from http.client import HTTPResponse
 
 from django.contrib.auth.decorators import login_required
@@ -27,7 +28,12 @@ from django.db.models import Q
 from django.shortcuts import render, redirect
 from .recycleForms import AddRecycleItemForm, SearchRecycleItemsForm
 
-
+from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
+from .models import RecycleItem, Member
+from django.utils import timezone
+from datetime import timedelta
+from django.db.models import Count
 # Create your views here.
 
 
@@ -392,3 +398,56 @@ class MarkAsUnavailableView(LoginRequiredMixin, UpdateView):
 class DeleteItemView(LoginRequiredMixin, DeleteView):
     model = RecycleItem
     success_url = reverse_lazy('e_waste_app:view_my_items')
+
+
+@login_required
+def dashboard(request):
+    today = timezone.now().date()
+    start_of_week = today - timedelta(days=today.weekday())
+
+    # General Dashboard Data
+    total_users_this_week = Member.objects.filter(date_joined__gte=start_of_week).count()
+    total_ads_expired = RecycleItem.objects.filter(is_active=False).count()
+    total_ads_by_category = RecycleItem.objects.values('category').annotate(total=Count('id'))
+
+    # Personal Dashboard Data
+    # Assuming you have a mechanism to track visit durations
+    average_visit_duration_today = get_average_visit_duration_for_user(request.user, today)
+    number_of_actions_today = get_number_of_actions_for_user(request.user, today)
+    most_viewed_ads_today = get_most_viewed_ads_for_user(request.user, today)
+    last_login_time = request.user.last_login
+    profile_completion_status = get_profile_completion_status(request.user)
+
+    context = {
+        'total_users_this_week': total_users_this_week,
+        'total_ads_expired': total_ads_expired,
+        'total_ads_by_category': total_ads_by_category,
+        'average_visit_duration_today': average_visit_duration_today,
+        'number_of_actions_today': number_of_actions_today,
+        'most_viewed_ads_today': most_viewed_ads_today,
+        'last_login_time': last_login_time,
+        'profile_completion_status': profile_completion_status,
+    }
+
+    return render(request, 'e_waste_app/dashboard.html', context)
+
+
+# Helper functions (placeholders for actual implementation)
+def get_average_visit_duration_for_user(user, date):
+    # Implement logic to calculate average visit duration
+    return "0 mins"
+
+
+def get_number_of_actions_for_user(user, date):
+    # Implement logic to count number of actions
+    return 0
+
+
+def get_most_viewed_ads_for_user(user, date):
+    # Implement logic to get most viewed ads
+    return []
+
+
+def get_profile_completion_status(user):
+    # Implement logic to check profile completion
+    return "Incomplete"
