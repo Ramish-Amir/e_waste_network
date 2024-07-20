@@ -58,3 +58,10 @@ class SearchRecycleItemsForm(forms.Form):
 
         self.helper = FormHelper()
         self.helper.add_input(Submit('search', 'Search'))
+
+
+class EditRecycleItemForm(forms.ModelForm):
+    class Meta:
+        model = RecycleItem
+        fields = ['item_type', 'description', 'condition', 'category', 'email', 'phone', 'address', 'city', 'province',
+                  'postal_code', 'country', 'image']

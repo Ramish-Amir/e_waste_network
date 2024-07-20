@@ -16,17 +16,17 @@ from django.template.loader import render_to_string
 from django.urls import reverse, reverse_lazy
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
-from django.views.generic import FormView, ListView, UpdateView, DeleteView
+from django.views.generic import FormView, ListView, DeleteView
+from django.views.generic.edit import UpdateView
 from .forms import PasswordResetConfirmForm, ProfileForm
 from .forms import LoginForm, RegisterForm, PasswordResetForm
 from django.utils import timezone
 from django.contrib import messages
 from .forms import ContactForm
-from .models import Product, Member, RecycleItem
+from .models import Product, Member, RecycleItem, ContactMessage
 from django.db.models import Q
 from django.shortcuts import render, redirect
-from .recycleForms import AddRecycleItemForm, SearchRecycleItemsForm
-
+from .recycleForms import AddRecycleItemForm, SearchRecycleItemsForm, EditRecycleItemForm
 
 # Create your views here.
 
@@ -391,4 +391,11 @@ class MarkAsUnavailableView(LoginRequiredMixin, UpdateView):
 
 class DeleteItemView(LoginRequiredMixin, DeleteView):
     model = RecycleItem
+    success_url = reverse_lazy('e_waste_app:view_my_items')
+
+
+class EditItemView(LoginRequiredMixin, UpdateView):
+    model = RecycleItem
+    form_class = EditRecycleItemForm
+    template_name = 'e_waste_app/item_edit_form.html'
     success_url = reverse_lazy('e_waste_app:view_my_items')

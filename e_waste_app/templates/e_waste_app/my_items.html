@@ -105,6 +105,10 @@
                 </div>
                 <div class="card-buttons-wrap">
 {#                    <button class="btn btn-primary">Edit</button>#}
+                    <form action="{% url 'e_waste_app:edit_item' item.pk %}" method="post" style="display:inline;">
+                    {% csrf_token %}
+                    <button class="btn btn-primary" type="submit">Edit</button>
+                </form>
                     <form action="{% url 'e_waste_app:mark_unavailable' item.pk %}" method="post" style="display:inline;">
                     {% csrf_token %}
                     <button class="btn btn-secondary" type="submit">Mark as Unavailable</button>
