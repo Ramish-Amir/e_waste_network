@@ -75,11 +75,11 @@
         {% for item in results %}
             <div class="col-md-4 my-4">
                 <div class="card">
-{#                    {% if item.image %}#}
+                    {% if item.image %}
                         <img class="card-img-top" src="{{ item.image.url }}" alt="Card image cap">
-{#                    {% else %}#}
-{#                        <img class="card-img-top" src="{% static 'path/to/default-image.jpg' %}" alt="Default image">#}
-{#                    {% endif %}#}
+                    {% else %}
+                        <img class="card-img-top" src="https://media.istockphoto.com/id/1147544807/vector/thumbnail-image-vector-graphic.jpg?s=612x612&w=0&k=20&c=rnCKVbdxqkjlcs3xH87-9gocETqpspHFXu5dIGB4wuM=" alt="Default image">
+                    {% endif %}
                     <div class="card-body">
                         <h5 class="card-title">{{ item.item_type }}</h5>
                         <p class="card-text truncate-multiline">{{ item.description }}</p>
