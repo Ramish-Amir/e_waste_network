@@ -211,7 +211,7 @@ def add_recycle_item(request):
 
 def view_recycle_items(request):
     form = SearchRecycleItemsForm(request.GET or None)
-    results = RecycleItem.objects.all()
+    results = RecycleItem.objects.all().order_by('-created_at')
 
     if form.is_valid():
         keyword = form.cleaned_data.get('keyword')
@@ -223,7 +223,7 @@ def view_recycle_items(request):
         if keyword:
             results = results.filter(Q(description__icontains=keyword) | Q(item_type__icontains=keyword))
         if category:
-            results = results.filter(category__search=category)
+            results = results.filter(category=category)
         if condition:
             results = results.filter(condition=condition)
         if location:
