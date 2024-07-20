@@ -40,9 +40,9 @@ class SearchRecycleItemsForm(forms.Form):
     location = forms.CharField(required=False, label='')
     sort_by = forms.ChoiceField(
         choices=[
-            ('', 'Sort By'),
-            ('created_at', 'Date Created'),
-            ('item_type', 'Item Type')
+            ('-created_at', 'Most Recent'),
+            ('created_at', 'Least Recent'),
+            ('-condition', 'Condition'),
         ],
         required=False,
         label=''
