@@ -231,4 +231,13 @@ def view_recycle_items(request):
         if sort_by:
             results = results.order_by(sort_by)
 
-    return render(request, 'e_waste_app/search_items.html', {'form': form, 'results': results})
+    # Convert CATEGORY_CHOICES to a dictionary
+    category_choices_dict = dict(RecycleItem.CATEGORY_CHOICES)
+
+    context = {
+        'form': form,
+        'results': results,
+        'category_choices': category_choices_dict,
+    }
+
+    return render(request, 'e_waste_app/search_items.html', context)
