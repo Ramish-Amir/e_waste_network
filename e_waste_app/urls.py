@@ -16,5 +16,5 @@ urlpatterns =[
     path('contact/', views.contact_us, name='contactus'),
     path('search/', views.search_results, name='search_results'),  # Route for search results
     path('add_recycle_item/', views.add_recycle_item, name='add_recycle_item'),
-    path('view_recycle_items/', views.view_recycle_items, name='view_recycle_items'),
+    path(r'recycle_items/', views.view_recycle_items, name='view_recycle_items'),
 ]

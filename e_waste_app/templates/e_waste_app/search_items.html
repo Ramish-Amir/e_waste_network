@@ -1,13 +1,159 @@
+{#{% extends "e_waste_app/static/base.html" %}#}
+{#{% load crispy_forms_filters %}#}
+{#{% load crispy_forms_tags %}#}
+{##}
+{#{% block title %}Search Recycling Requests{% endblock %}#}
+{##}
+{#{% block content %}#}
+{##}
+{#<style>#}
+{##}
+{#    .card-img-top {#}
+{#        width: 100%;#}
+{#        height: 200px;#}
+{#        object-fit: cover;#}
+{#        border-bottom: 1px solid rgba(0,0,0,.125)#}
+{#    }#}
+{##}
+{#    .card-body {#}
+{#        flex: 1;#}
+{#    }#}
+{##}
+{#    .card:hover {#}
+{#        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);#}
+{#    }#}
+{#    .card-img-top {#}
+{#        max-height: 200px;#}
+{#        object-fit: cover;#}
+{#    }#}
+{##}
+{#    .truncate {#}
+{#        display: -webkit-box;#}
+{#        -webkit-box-orient: vertical;#}
+{#        -webkit-line-clamp: 3;#}
+{#        overflow: hidden;#}
+{#        text-overflow: ellipsis;#}
+{#    }#}
+{##}
+{#    .icon-text {#}
+{#        display: flex;#}
+{#        align-items: center;#}
+{#        margin-bottom: 5px;#}
+{#    }#}
+{#    .icon-text i {#}
+{#        margin-right: 8px;#}
+{#    }#}
+{#</style>#}
+{##}
+{#<div class="container">#}
+{#    <h2 class="text-center my-4">Search Recycling Requests</h2>#}
+{#    <form method="get">#}
+{#        <div class="form-row align-items-top">#}
+{#            <div class="col">#}
+{#                {{ form.keyword|as_crispy_field }}#}
+{#            </div>#}
+{#            <div class="col">#}
+{#                {{ form.category|as_crispy_field }}#}
+{#            </div>#}
+{#            <div class="col">#}
+{#                {{ form.location|as_crispy_field }}#}
+{#            </div>#}
+{#            <div class="col">#}
+{#                {{ form.sort_by|as_crispy_field }}#}
+{#            </div>#}
+{#            <div class="col-auto">#}
+{#                <button type="submit" class="btn btn-primary btn-block">Search</button>#}
+{#            </div>#}
+{#        </div>#}
+{#    </form>#}
+{#    <h3 class="my-4">Results</h3>#}
+{#<div class="card-deck">#}
+{#    {% for item in results %}#}
+{##}
+{#        <div class="col-md-4">#}
+{#                <div class="card my-4">#}
+{#                    <img class="card-img-top" src="{{ item.image.url }}" alt="Item Image">#}
+{#                    <div class="card-body">#}
+{#                        <h5 class="card-title">{{  item.item_type }}</h5>#}
+{#                        <p class="card-text truncate">{{ item.description }}.</p>#}
+{#                        <span class="badge badge-primary">{{  item.category }}</span>#}
+{#                        <span class="badge badge-secondary">{{ item.condition }}</span>#}
+{#                    </div>#}
+{#                    <div class="card-footer">#}
+{#                        <div class="badge-condition">#}
+{#                            <div class="icon-text">#}
+{#                                <i class="fas fa-clock text-muted"></i><small class="text-muted">{{  item.created_at }}</small>#}
+{#                            </div>#}
+{#                            <div class="icon-text">#}
+{#                                <i class="fas fa-map-marker-alt text-muted"></i><small class="text-muted">{{ item.address }}, {{ item.city }} {{ item.postal_code }}</small>#}
+{#                            </div>#}
+{#                        </div>#}
+{#                    </div>#}
+{#                </div>#}
+{#        </div>#}
+{##}
+{#    {% empty %}#}
+{#        <li>No results found.</li>#}
+{#    {% endfor %}#}
+{##}
+{##}
+{##}
+{#</div>#}
+{#</div>#}
+{##}
+{#{% endblock %}#}
+
+
 {% extends "e_waste_app/static/base.html" %}
+{% load custom_filters %}
 {% load crispy_forms_filters %}
 {% load crispy_forms_tags %}
 
 {% block title %}Search Recycling Requests{% endblock %}
 
 {% block content %}
+<style>
+    .truncate-multiline {
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 3;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .card-img-top {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        border-bottom: 1px solid rgba(0,0,0,.125);
+    }
+
+    .card {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .card:hover {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-body {
+        flex: 1;
+    }
+
+    .icon-text {
+        display: flex;
+        align-items: center;
+        margin-bottom: 5px;
+    }
+    .icon-text i {
+        margin-right: 8px;
+    }
+</style>
 
 <div class="container">
-    <h2 class="text-center my-4">Search Recycling Requests</h2>
+    <h5 class="my-4">Customize your search</h5>
     <form method="get">
         <div class="form-row align-items-top">
             <div class="col">
@@ -27,14 +173,39 @@
             </div>
         </div>
     </form>
-    <h3 class="my-4">Results</h3>
-    <ul>
+    <h2 class="my-4 text-center">Available Items</h2>
+    <div class="row">
         {% for item in results %}
-            <li>{{ item.item_type }} - {{ item.description }} - {{ item.city }} - {{ item.created_at }}</li>
+            <div class="col-md-4 my-4">
+                <div class="card">
+{#                    {% if item.image %}#}
+                        <img class="card-img-top" src="{{ item.image.url }}" alt="Card image cap">
+{#                    {% else %}#}
+{#                        <img class="card-img-top" src="{% static 'path/to/default-image.jpg' %}" alt="Default image">#}
+{#                    {% endif %}#}
+                    <div class="card-body">
+                        <h5 class="card-title">{{ item.item_type }}</h5>
+                        <p class="card-text truncate-multiline">{{ item.description }}</p>
+                        <span class="badge badge-primary">{{ category_choices|get_item:item.category }}</span>
+                        <span class="badge badge-secondary">{{ item.condition }}</span>
+                    </div>
+                    <div class="card-footer">
+                        <div class="badge-condition">
+                            <div class="icon-text">
+                                <i class="fas fa-clock text-muted"></i><small class="text-muted">{{  item.created_at }}</small>
+                            </div>
+                            <div class="icon-text">
+                                <i class="fas fa-map-marker-alt text-muted"></i><small class="text-muted">{{ item.address }}, {{ item.city }} {{ item.postal_code }}</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         {% empty %}
-            <li>No results found.</li>
+            <div class="col-12">
+                <p>No results found.</p>
+            </div>
         {% endfor %}
-    </ul>
+    </div>
 </div>
-
 {% endblock %}
