@@ -1,0 +1,37 @@
+{% extends 'e_waste_app/static/base.html' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="my-4">Dashboard</h1>
+
+    <h2>General Dashboard</h2>
+    <ul>
+        <li>Total Users Registered This Week: {{ total_users_this_week }}</li>
+        <li>Total Ads Expired: {{ total_ads_expired }}</li>
+        <li>Total Ads by Category:
+            <ul>
+                {% for category in total_ads_by_category %}
+                    <li>{{ category.category }}: {{ category.total }}</li>
+                {% endfor %}
+            </ul>
+        </li>
+    </ul>
+
+    <h2>Personal Dashboard</h2>
+    <ul>
+        <li>Average Visit Duration Today: {{ average_visit_duration_today }}</li>
+        <li>Number of Actions Taken Today: {{ number_of_actions_today }}</li>
+        <li>Most Viewed Ads Today:
+            <ul>
+                {% for ad in most_viewed_ads_today %}
+                    <li>{{ ad }}</li>
+                {% endfor %}
+            </ul>
+        </li>
+        <li>Last Login Time: {{ last_login_time }}</li>
+        <li>Profile Completion Status: {{ profile_completion_status }}</li>
+    </ul>
+</div>
+{% endblock %}
