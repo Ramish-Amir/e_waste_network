@@ -13,8 +13,6 @@ urlpatterns = [
     path(r'register/', views.user_register, name='register'),
     path(r'logout/', views.user_logout, name='logout'),
     path(r'password_reset/', views.password_reset, name='password_reset'),
-    #path(r'password_reset/', PasswordResetView.as_view(template_name='e_waste_app/Password_reset.html',extra_context={ 'password_reset_form': PasswordResetConfirmForm()}),
-     #    name='password_reset'),
     path(r'password_reset_done', PasswordResetDoneView.as_view(template_name='e_waste_app/password_reset_done.html'),
          name='password_reset_done'),
     path('reset/<uidb64>/<token>/', CustomPasswordResetConfirmView.as_view(),
@@ -27,6 +25,7 @@ urlpatterns = [
     path('article3/', views.article3, name='article3'),
     path('contact/', views.contact_us, name='contactus'),
     path('profile/', views.profile, name='profile'),
-    path('search/', views.search_results, name='search_results')  # Route for search results
-
+    path('search/', views.search_results, name='search_results'),
+    path('add_recycle_item/', views.add_recycle_item, name='add_recycle_item'),
+    path(r'recycle_items/', views.view_recycle_items, name='view_recycle_items'),
 ]
