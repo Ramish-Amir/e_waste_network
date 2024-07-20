@@ -26,6 +26,7 @@ urlpatterns = [
     path('article2/', views.article2, name='article2'),
     path('article3/', views.article3, name='article3'),
     path('contact/', views.contact_us, name='contactus'),
+    path('profile/', views.profile, name='profile'),
     path('search/', views.search_results, name='search_results')  # Route for search results
 
 ]

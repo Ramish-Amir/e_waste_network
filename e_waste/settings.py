@@ -28,6 +28,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
+#MAIL_BACKEND = 'django.core.mail.backends.emailbased.EmailBackend'
 EMAIL_FILE_PATH = r'C:\Users\anilk\OneDrive\Desktop\internet applicaction distributed systems\project_new\e_waste_network\e_waste_app\templates\email'
 
 '''if not os.path.exists(EMAIL_FILE_PATH):
