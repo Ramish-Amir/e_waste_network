@@ -1,0 +1,36 @@
+{% extends 'e_waste_app/static/base.html' %}
+{% load crispy_forms_filters %}
+{% block content %}
+    <div class="container content-section">
+    <h2>Profile</h2>
+    {% if messages %}
+        <div class="alert alert-success">
+            {% for message in messages %}
+                {{ message }}
+            {% endfor %}
+        </div>
+    {% endif %}
+    <form method="post" novalidate>
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="id_name"></label>
+            {{ form.username|as_crispy_field }}
+        </div>
+        <div class="form-group">
+            <label for="id_email"></label>
+            {{ form.email|as_crispy_field }}
+        </div>
+        <div class="form-group">
+            <label for="id_password"></label>
+            {{ form.address|as_crispy_field }}
+        </div>
+        <div class="form-group">
+            <label for="id_confirm_password"></label>
+            {{ form.postal_code|as_crispy_field }}
+        </div>
+
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+    </form>
+</div>
+
+{% endblock %}

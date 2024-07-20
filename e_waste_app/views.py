@@ -7,7 +7,7 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
 from django.http import HttpResponseRedirect
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import views as auth_views, authenticate, login, logout, get_user_model
 from django.contrib import messages
 from django.template.loader import render_to_string
@@ -16,20 +16,32 @@ from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.views.generic import FormView
 
-from .forms import LoginForm, RegisterForm, PasswordResetForm, PasswordResetConfirmForm
+from .forms import LoginForm, RegisterForm, PasswordResetForm, PasswordResetConfirmForm, ProfileForm
 from django.utils import timezone
 
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from .forms import ContactForm
-from .models import Product  # Assuming Product is your model
+from .models import Product, Member  # Assuming Product is your model
 
 
 # Create your views here.
 
 
 def profile(request):
-    render(request, '', {})
+    user = request.user
+    member = get_object_or_404(Member, username=user.username)
+    if request.method == 'POST':
+        form = ProfileForm(request.POST, instance=member)  # Bind the form with the existing instance
+        if form.is_valid():
+            form.save()  # Update the existing instance
+            return redirect('e_waste_app:home')
+        else:
+            print("Form errors:", form.errors)
+            return render(request, 'e_waste_app/profile.html', {'form': form})
+    else:
+        form = ProfileForm(instance=member)  # Initialize form with the existing instance
+    return render(request, 'e_waste_app/profile.html', {'form': form})
 
 
 def user_register(request):
@@ -52,8 +64,10 @@ def user_register(request):
                 messages.error(request, 'Passwords do not match')
                 print('Password dont match', user_password, user_confirm_password)
                 return render(request, 'e_waste_app/Register.html', {'form': form})
-            user = User.objects.create_user(username=username, email=email, password=user_password)
-            user.save()
+            #user = User.objects.create_user(username=username, email=email, password=user_password)
+            member = Member.objects.create_user(username=username, email=email, password=user_password)
+            #user.save()
+            member.save()
             messages.success(request, f'account created for {username}')
             return redirect('e_waste_app:login')
 
@@ -216,7 +230,7 @@ class CustomPasswordResetConfirmView(FormView):
         try:
             uid = urlsafe_base64_decode(uidb64).decode()
             user = UserModel.objects.get(pk=uid)
-            print('user:',user.email)
+            print('user:', user.email)
         except (TypeError, ValueError, OverflowError, UserModel.DoesNotExist):
             user = None
         kwargs['user'] = user  # Provide the user to the form
@@ -226,7 +240,7 @@ class CustomPasswordResetConfirmView(FormView):
         uidb64 = self.kwargs.get('uidb64')
         token = self.kwargs.get('token')
         UserModel = get_user_model()
-        print('uidb64: ',uidb64)
+        print('uidb64: ', uidb64)
         print('token: ', token)
         try:
             uid = urlsafe_base64_decode(uidb64).decode()
@@ -258,8 +272,6 @@ class CustomPasswordResetConfirmView(FormView):
         else:
             form.add_error(None, 'Invalid token or user ID')
             return self.form_invalid(form)
-
-
 
     def form_invalid(self, form):
         return render(self.request, self.template_name, {'form': form,

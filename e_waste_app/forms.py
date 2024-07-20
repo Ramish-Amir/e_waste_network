@@ -2,8 +2,9 @@ from django import forms
 from django.contrib.auth.forms import SetPasswordForm
 from django.contrib.auth.password_validation import CommonPasswordValidator
 from django.core.exceptions import ValidationError
+from django.forms import ModelForm
 
-from .models import ContactMessage
+from .models import ContactMessage, Member
 from django.contrib.auth.models import User
 
 
@@ -56,7 +57,8 @@ class PasswordResetConfirmForm(SetPasswordForm):
         super().__init__(user=user, *args, **kwargs)
         #super().__init__(*args, **kwargs)
         self.fields['new_password1'].widget.attrs.update({'class': 'form-control', 'placeholder': 'New password'})
-        self.fields['new_password2'].widget.attrs.update({'class': 'form-control', 'placeholder': 'Confirm new password'})
+        self.fields['new_password2'].widget.attrs.update(
+            {'class': 'form-control', 'placeholder': 'Confirm new password'})
 
     def clean_new_password1(self):
         password = self.cleaned_data.get('new_password1')
@@ -81,3 +83,28 @@ class PasswordResetConfirmForm(SetPasswordForm):
                 validator.validate(password)
             except ValidationError as e:
                 raise ValidationError(e.message)'''
+
+
+class ProfileForm(ModelForm):
+    class Meta:
+        model = Member
+        fields = ['username','first_name', 'last_name', 'email', 'phone_number', 'address', 'city', 'province', 'postal_code',
+                  'country', 'country', 'user_type', 'e_waste_interests', 'recycling_preferences']
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
+        if user is not None:
+            self.fields['username'].initial = user.username
+            self.fields['email'].initial = user.email
+            self.fields['phone_number'].initial = getattr(user, 'phone_number', '')
+            self.fields['address'].initial = getattr(user, 'address', '')
+            self.fields['city'].initial = getattr(user, 'city', '')
+            self.fields['province'].initial = getattr(user, 'province', '')
+            self.fields['postal_code'].initial = getattr(user, 'postal_code', '')
+            self.fields['country'].initial = getattr(user, 'country', '')
+            self.fields['user_type'].initial = getattr(user, 'user_type', '')
+            self.fields['e_waste_interests'].initial = getattr(user, 'e_waste_interests', '')
+            self.fields['recycling_preferences'].initial = getattr(user, 'recycling_preferences', '')
+
+        else:
+            print(r'user is none')
