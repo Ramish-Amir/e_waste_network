@@ -13,7 +13,7 @@ from django.template.loader import render_to_string
 from django.urls import reverse, reverse_lazy
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
-from django.views.generic import FormView
+from django.views.generic import FormView, TemplateView
 from .forms import PasswordResetConfirmForm, ProfileForm
 from .forms import LoginForm, RegisterForm, PasswordResetForm
 from django.utils import timezone
@@ -146,39 +146,29 @@ def password_reset_done(request):
     return render(request, 'e_waste_app/password_reset_done.html')
 
 
-def home(request):
-    return render(request, 'e_waste_app/home.html')
+class HomeView(TemplateView):
+    template_name = 'e_waste_app/home.html'
 
+class AboutUsView(TemplateView):
+    template_name = 'e_waste_app/aboutus.html'
 
+class Article1View(TemplateView):
+    template_name = 'e_waste_app/article1.html'
 
+class Article2View(TemplateView):
+    template_name = 'e_waste_app/article2.html'
 
-def aboutus(request):
-    return render(request, 'e_waste_app/aboutus.html')
+class Article3View(TemplateView):
+    template_name = 'e_waste_app/article3.html'
 
+class ContactUsView(FormView):
+    template_name = 'e_waste_app/contact_us.html'
+    form_class = ContactForm
 
-def article1(request):
-    return render(request, 'e_waste_app/article1.html')
-
-
-def article2(request):
-    return render(request, 'e_waste_app/article2.html')
-
-
-def article3(request):
-    return render(request, 'e_waste_app/article3.html')
-
-
-def contact_us(request):
-    if request.method == 'POST':
-        form = ContactForm(request.POST)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Your message has been sent successfully!')
-            return redirect('contactus')
-    else:
-        form = ContactForm()
-    return render(request, 'e_waste_app/contact_us.html', {'form': form})
-
+    def form_valid(self, form):
+        form.save()
+        messages.success(self.request, 'Your message has been sent successfully!')
+        return redirect('contactus')
 
 def search_results(request):
     name_query = request.GET.get('name', '')
@@ -357,3 +347,5 @@ def recycle_item_detail(request, pk):
         'condition_choices': dict(RecycleItem.CONDITION_CHOICES),
     }
     return render(request, 'e_waste_app/recycle_item_detail.html', context)
+
+
