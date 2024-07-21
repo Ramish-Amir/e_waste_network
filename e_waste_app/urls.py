@@ -27,5 +27,6 @@ urlpatterns = [
     path('profile/', views.profile, name='profile'),
     path('search/', views.search_results, name='search_results'),
     path('add_recycle_item/', views.add_recycle_item, name='add_recycle_item'),
-    path(r'recycle_items/', views.view_recycle_items, name='view_recycle_items'),
+    path('recycle_items/', views.view_recycle_items, name='view_recycle_items'),
+    path('item/<int:pk>/', views.recycle_item_detail, name='recycle_item_detail'),  # New path for detail view
 ]

@@ -24,7 +24,6 @@ from django.db.models import Q
 from django.shortcuts import render, redirect
 from .recycleForms import AddRecycleItemForm, SearchRecycleItemsForm
 
-
 # Create your views here.
 
 
@@ -151,8 +150,6 @@ def home(request):
     return render(request, 'e_waste_app/home.html')
 
 
-def footer(request):
-    return render(request, 'e_waste_app/footer.html')
 
 
 def aboutus(request):
@@ -351,3 +348,12 @@ def view_recycle_items(request):
     }
 
     return render(request, 'e_waste_app/search_items.html', context)
+
+def recycle_item_detail(request, pk):
+    item = get_object_or_404(RecycleItem, pk=pk)
+    context = {
+        'item': item,
+        'category_choices': dict(RecycleItem.CATEGORY_CHOICES),
+        'condition_choices': dict(RecycleItem.CONDITION_CHOICES),
+    }
+    return render(request, 'e_waste_app/recycle_item_detail.html', context)

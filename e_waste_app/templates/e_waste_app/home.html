@@ -1,68 +1,156 @@
-{% extends 'e_waste_app/static/base.html' %}
+{% extends 'e_waste_app/base.html' %}
+{% load static %}
+{% block styles %}
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+<style>
+.hero-section {
+    background-color: red;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    min-height: 60vh;
+}
+
+.overlay {
+    background-color: rgba(0, 0, 0, 0.5); /* Example of semi-transparent overlay */
+}
+
+.card {
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    border: none; /* Remove default border */
+    border-radius: 0.5rem; /* Ensure rounded corners */
+}
+
+.card-img-top {
+    transition: transform 0.3s ease-in-out;
+    border-radius: 0.5rem 0.5rem 0 0; /* Round only top corners */
+}
+
+.card-body {
+    background: #fff;
+    border-radius: 0 0 0.5rem 0.5rem; /* Round only bottom corners */
+}
+
+.transform-hover:hover {
+    transform: scale(1.05);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+}
+
+.card:hover .card-img-top {
+    transform: scale(1.1);
+}
+
+.card-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.card-text {
+    font-size: 1rem;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border: none;
+    transition: background-color 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+}
+
+.btn-success {
+    background-color: #28a745;
+    border: none;
+    transition: background-color 0.3s ease;
+}
+
+.btn-success:hover {
+    background-color: #218838;
+}
+
+.search-section input {
+    border-radius: 50px;
+}
+
+.search-section button {
+    border-radius: 50px;
+}
+</style>
+
+{% endblock %}
 
 {% block title %}Home - E-Waste Recycling Network{% endblock %}
 
 {% block content %}
-<!-- Hero Section -->
-<section class="hero-section">
-    <div class="container text-center">
-        <h1>Welcome to E-Waste Recycling Network</h1>
-        <p>Connecting individuals and organizations for responsible e-waste recycling.</p>
+<section class="hero-section text-center py-5">
+    <div class="overlay d-flex align-items-center justify-content-center">
+        <div class="container py-5 my-5">
+            <h1 class="display-4 font-weight-bold animate__animated animate__fadeInDown">Welcome to the E-Waste Recycling Network</h1>
+            <p class="lead mb-4 animate__animated animate__fadeInUp animate__delay-1s">Connecting individuals and organizations for responsible e-waste recycling and a cleaner planet.</p>
+            <a href="#search" class="btn btn-success btn-lg animate__animated animate__fadeInUp animate__delay-2s">Get Started</a>
+        </div>
     </div>
 </section>
 
-<!-- Search Section -->
-<section class="search-section py-5">
+<section id="search" class="search-section py-5">
     <div class="container">
-        <form method="GET" action="{% url 'e_waste_app:search_results' %}">
+        <form method="GET" action="/search_results/">
             <div class="row justify-content-center">
-                <div class="col-md-5">
-                    <input type="text" name="name" class="form-control mb-3" placeholder="Search by Name...">
+                <div class="col-md-4 mb-3">
+                    <div class="input-group">
+                        <input type="text" name="name" class="form-control form-control-lg" placeholder="Search by Name...">
+                        <div class="input-group-append">
+                            <span class="input-group-text"><i class="bi bi-search"></i></span>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-md-5">
-                    <input type="text" name="zipcode" class="form-control mb-3" placeholder="Enter Zipcode">
+                <div class="col-md-4 mb-3">
+                    <div class="input-group">
+                        <input type="text" name="zipcode" class="form-control form-control-lg" placeholder="Enter Zipcode">
+                        <div class="input-group-append">
+                            <span class="input-group-text"><i class="bi bi-geo-alt"></i></span>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-md-2">
-                    <button type="submit" class="btn btn-primary btn-block mb-3">Search</button>
+                <div class="col-md-4 mb-3">
+                    <button type="submit" class="btn btn-success btn-lg btn-block">Search</button>
                 </div>
             </div>
         </form>
     </div>
 </section>
 
-<!-- Articles Section -->
 <section class="articles-section py-5">
     <div class="container">
         <div class="row">
-            <!-- Article 1 -->
-            <div class="col-md-4">
-                <div class="card">
-                    <img src="https://via.placeholder.com/150" class="card-img-top" alt="E-Waste Article 1">
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-lg border-0 rounded-lg transform-hover">
+                    <img src="{% static 'images/article1_img.jpg' %}" class="card-img-top" alt="The Importance of E-Waste Recycling">
                     <div class="card-body">
                         <h5 class="card-title">The Importance of E-Waste Recycling</h5>
-                        <p class="card-text">E-waste recycling is crucial for reducing environmental pollution and recovering valuable materials.</p>
+                        <p class="card-text">Discover why recycling e-waste is crucial for reducing environmental pollution and conserving valuable resources.</p>
                         <a href="article1/" class="btn btn-primary">Read More</a>
                     </div>
                 </div>
             </div>
-            <!-- Article 2 -->
-            <div class="col-md-4">
-                <div class="card">
-                    <img src="https://via.placeholder.com/150" class="card-img-top" alt="E-Waste Article 2">
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-lg border-0 rounded-lg transform-hover">
+                    <img src="{% static 'images/article2_img.jpg' %}" class="card-img-top" alt="How to Dispose of E-Waste Responsibly">
                     <div class="card-body">
                         <h5 class="card-title">How to Dispose of E-Waste Responsibly</h5>
-                        <p class="card-text">Learn how to dispose of your electronic waste in a responsible manner and the benefits of doing so.</p>
+                        <p class="card-text">Learn effective methods for disposing of electronic waste in an eco-friendly way and the benefits of responsible disposal.</p>
                         <a href="article2/" class="btn btn-primary">Read More</a>
                     </div>
                 </div>
             </div>
-            <!-- Article 3 -->
-            <div class="col-md-4">
-                <div class="card">
-                    <img src="https://via.placeholder.com/150" class="card-img-top" alt="E-Waste Article 3">
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-lg border-0 rounded-lg transform-hover">
+                    <img src="{% static 'images/article3_img.jpeg' %}" class="card-img-top" alt="E-Waste Recycling Programs Near You">
                     <div class="card-body">
                         <h5 class="card-title">E-Waste Recycling Programs Near You</h5>
-                        <p class="card-text">Find out about various e-waste recycling programs and how you can participate in them.</p>
+                        <p class="card-text">Find local e-waste recycling programs and learn how you can get involved in making a positive impact.</p>
                         <a href="article3/" class="btn btn-primary">Read More</a>
                     </div>
                 </div>
@@ -70,4 +158,14 @@
         </div>
     </div>
 </section>
+
+<footer class="bg-dark text-white text-center py-3"> </footer>
+{% endblock %}
+
+
+
+{% block scripts %}
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 {% endblock %}
