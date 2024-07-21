@@ -1,9 +1,5 @@
 from e_waste_app import views
-from django.urls import path
-from django.contrib.auth.views import PasswordResetView, PasswordResetDoneView, PasswordResetConfirmView, \
-    PasswordResetCompleteView
-
-from e_waste_app.forms import PasswordResetConfirmForm
+from django.contrib.auth.views import PasswordResetDoneView
 from e_waste_app.views import CustomPasswordResetConfirmView, CustomPasswordResetCompleteView
 from django.urls import path
 from e_waste_app.views import (
@@ -35,8 +31,13 @@ urlpatterns = [
     path('contact/', ContactUsView.as_view(), name='contactus'),
     path('profile/', views.profile, name='profile'),
     path('search/', views.search_results, name='search_results'),
+
+    # Recycle items urls
     path('add_recycle_item/', views.add_recycle_item, name='add_recycle_item'),
     path('recycle_items/', views.view_recycle_items, name='view_recycle_items'),
-    path('item/<int:pk>/', views.recycle_item_detail, name='recycle_item_detail'),  # New path for detail view
+    path('my_items/', views.MyItemsView.as_view(), name='view_my_items'),
+    path('mark_unavailable/<int:pk>/', views.MarkAsUnavailableView.as_view(), name='mark_unavailable'),
+    path('delete_item/<int:pk>/', views.DeleteItemView.as_view(), name='delete_item'),
+    path('edit_item/<int:pk>/', views.EditItemView.as_view(), name='edit_item'),
+    path('item/<int:pk>/', views.recycle_item_detail, name='recycle_item_detail'),
 ]
-
