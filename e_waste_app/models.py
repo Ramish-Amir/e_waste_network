@@ -36,6 +36,7 @@ class ContactMessage(models.Model):
 
 class Product(models.Model):
     name = models.CharField(max_length=100)
+    email= models.EmailField()
     description = models.TextField()
     address = models.CharField(max_length=200)
     zipcode = models.CharField(max_length=10)
