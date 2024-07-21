@@ -5,28 +5,38 @@ from django.contrib.auth.views import PasswordResetView, PasswordResetDoneView, 
 
 from e_waste_app.forms import PasswordResetConfirmForm
 from e_waste_app.views import CustomPasswordResetConfirmView, CustomPasswordResetCompleteView
+from django.urls import path
+from e_waste_app.views import (
+    HomeView,
+    AboutUsView,
+    Article1View,
+    Article2View,
+    Article3View,
+    ContactUsView,    # Import other views as needed
+)
 
 app_name = 'e_waste_app'
 urlpatterns = [
-    path(r'', views.home, name='home'),
-    path(r'login/', views.user_login, name='login'),
-    path(r'register/', views.user_register, name='register'),
-    path(r'logout/', views.user_logout, name='logout'),
-    path(r'password_reset/', views.password_reset, name='password_reset'),
-    path(r'password_reset_done', PasswordResetDoneView.as_view(template_name='e_waste_app/password_reset_done.html'),
+    path('', HomeView.as_view(), name='home'),
+    path('login/', views.user_login, name='login'),
+    path('register/', views.user_register, name='register'),
+    path('logout/', views.user_logout, name='logout'),
+    path('password_reset/', views.password_reset, name='password_reset'),
+    path('password_reset_done/', PasswordResetDoneView.as_view(template_name='e_waste_app/password_reset_done.html'),
          name='password_reset_done'),
     path('reset/<uidb64>/<token>/', CustomPasswordResetConfirmView.as_view(),
          name='password_reset_confirm'),
-    path(r'reset/done/', CustomPasswordResetCompleteView.as_view(),
+    path('reset/done/', CustomPasswordResetCompleteView.as_view(),
          name='password_reset_complete'),
-    path('aboutus/', views.aboutus, name='aboutus'),
-    path('article1/', views.article1, name='article1'),
-    path('article2/', views.article2, name='article2'),
-    path('article3/', views.article3, name='article3'),
-    path('contact/', views.contact_us, name='contactus'),
+    path('aboutus/', AboutUsView.as_view(), name='aboutus'),
+    path('article1/', Article1View.as_view(), name='article1'),
+    path('article2/', Article2View.as_view(), name='article2'),
+    path('article3/', Article3View.as_view(), name='article3'),
+    path('contact/', ContactUsView.as_view(), name='contactus'),
     path('profile/', views.profile, name='profile'),
     path('search/', views.search_results, name='search_results'),
     path('add_recycle_item/', views.add_recycle_item, name='add_recycle_item'),
     path('recycle_items/', views.view_recycle_items, name='view_recycle_items'),
     path('item/<int:pk>/', views.recycle_item_detail, name='recycle_item_detail'),  # New path for detail view
 ]
+
