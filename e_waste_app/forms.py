@@ -3,7 +3,6 @@ from django.contrib.auth.forms import SetPasswordForm
 from django.contrib.auth.password_validation import CommonPasswordValidator
 from django.core.exceptions import ValidationError
 from django.forms import ModelForm
-
 from .models import ContactMessage, Member
 from django.contrib.auth.models import User
 
@@ -17,27 +16,23 @@ class LoginForm(forms.Form):
                                                            'placeholder': 'password'}))
 
 
-class RegisterForm(forms.Form):
-    username = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
-    email = forms.EmailField()
-    password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control'}))
-    confirm_password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control'}))
+class RegisterForm(forms.ModelForm):
+    password = forms.CharField(widget=forms.PasswordInput)
+    confirm_password = forms.CharField(widget=forms.PasswordInput)
+
+    class Meta:
+        model = Member
+        fields = ['username', 'email', 'password']
 
     def clean(self):
-        cleaned_data = super(RegisterForm, self).clean()
-        password = cleaned_data.get('password')
-        confirm_password = cleaned_data.get('confirm_password')
-        if password and confirm_password and password != confirm_password:
-            raise forms.ValidationError('Passwords must match')
+        cleaned_data = super().clean()
+        password = cleaned_data.get("password")
+        confirm_password = cleaned_data.get("confirm_password")
+
+        if password != confirm_password:
+            raise forms.ValidationError("Passwords do not match")
+
         return cleaned_data
-
-    def save(self):
-        username = self.cleaned_data.get('username')
-        email = self.cleaned_data.get('email')
-        password = self.cleaned_data.get('password')
-
-        user = User.objects.create_user(username=username, email=email, password=password)
-        return user
 
 
 class ContactForm(forms.ModelForm):
@@ -55,7 +50,6 @@ class PasswordResetConfirmForm(SetPasswordForm):
         # Extract user if present
         user = kwargs.pop('user', None)
         super().__init__(user=user, *args, **kwargs)
-        #super().__init__(*args, **kwargs)
         self.fields['new_password1'].widget.attrs.update({'class': 'form-control', 'placeholder': 'New password'})
         self.fields['new_password2'].widget.attrs.update(
             {'class': 'form-control', 'placeholder': 'Confirm new password'})
@@ -77,19 +71,14 @@ class PasswordResetConfirmForm(SetPasswordForm):
         if password in common_passwords:
             raise ValidationError('Password can’t be a commonly used password')
 
-        '''validators = [CommonPasswordValidator()]
-        for validator in validators:
-            try:
-                validator.validate(password)
-            except ValidationError as e:
-                raise ValidationError(e.message)'''
-
 
 class ProfileForm(ModelForm):
     class Meta:
         model = Member
-        fields = ['username','first_name', 'last_name', 'email', 'phone_number', 'address', 'city', 'province', 'postal_code',
+        fields = ['username', 'first_name', 'last_name', 'email', 'phone_number', 'address', 'city', 'province',
+                  'postal_code',
                   'country', 'country', 'user_type', 'e_waste_interests', 'recycling_preferences']
+
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
@@ -105,6 +94,5 @@ class ProfileForm(ModelForm):
             self.fields['user_type'].initial = getattr(user, 'user_type', '')
             self.fields['e_waste_interests'].initial = getattr(user, 'e_waste_interests', '')
             self.fields['recycling_preferences'].initial = getattr(user, 'recycling_preferences', '')
-
         else:
             print(r'user is none')

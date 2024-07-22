@@ -10,6 +10,7 @@ class Member(User):
         ('individual', 'Individual'),
         ('organization', 'Organization'),
     ]
+    avatar = models.ImageField(upload_to='avatars/', blank=True, null=True)
     phone_number = models.CharField(max_length=15, blank=True, null=True)
     address = models.CharField(max_length=300, blank=True, null=True)
     city = models.CharField(blank=True,max_length=50)

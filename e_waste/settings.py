@@ -34,7 +34,8 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'ewastenetwork@gmail.com'
-EMAIL_HOST_PASSWORD = 'atgm ktae lxbx zxzn'
+#EMAIL_HOST_PASSWORD = 'atgm ktae lxbx zxzn'
+EMAIL_HOST_PASSWORD = 'lrxk vzlg njlx hjjv'
 DEFAULT_FROM_EMAIL = 'ewastenetwork@gmail.com'
 
 EMAIL_FILE_PATH = r'C:\Users\anilk\OneDrive\Desktop\internet applicaction distributed systems\project_new\e_waste_network\e_waste_app\templates\email'
