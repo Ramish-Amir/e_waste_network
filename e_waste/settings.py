@@ -129,7 +129,7 @@ USE_TZ = True
 
 # settings.py
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'e_waste_app/static')]
 
 # Media files (Uploaded files)
 MEDIA_URL = '/media/'
