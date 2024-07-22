@@ -105,7 +105,7 @@
                 </div>
                 <div class="card-buttons-wrap">
 {#                    <button class="btn btn-primary">Edit</button>#}
-                    <form action="{% url 'e_waste_app:edit_item' item.pk %}" method="post" style="display:inline;">
+                    <form action="{% url 'e_waste_app:edit_item' item.pk %}" method="get" style="display:inline;">
                     {% csrf_token %}
                     <button class="btn btn-primary" type="submit">Edit</button>
                 </form>
@@ -150,9 +150,10 @@
                         <i class="fas fa-map-marker-alt text-muted"></i><small class="text-muted">{{ item.address }}, {{ item.city }} {{ item.postal_code }}</small>
                     </div>
                 </div>
-                <div class="card-buttons-wrap">
-                    <button class="btn btn-danger">Delete</button>
-                </div>
+                <form action="{% url 'e_waste_app:delete_item' item.pk %}" method="post" style="display:inline;">
+                    {% csrf_token %}
+                    <button class="btn btn-danger" type="submit">Delete</button>
+                </form>
             </div>
         </div>
 
