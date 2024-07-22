@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -39,9 +40,8 @@
             color: #f0ad4e;
         }
         .footer-logo {
-            font-size: 30px;
-            font-weight: bold;
-            color: #f0ad4e;
+            width: 250px;
+            margin-bottom: 20px;
         }
     </style>
 </head>
@@ -52,7 +52,8 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-3">
-                    <h5 class="footer-logo">E-Waste</h5>
+{#                    <h5 class="footer-logo">E-Waste</h5>#}
+                    <img class="footer-logo" src="{% static 'images/logo-no-background.svg' %}" alt="ewaste logo" >
                     <p>The E-Waste Recycling Network connects users with e-waste recycling options, allowing for responsible disposal and reducing environmental pollution.</p>
                 </div>
                 <div class="col-md-3">

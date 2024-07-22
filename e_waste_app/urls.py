@@ -35,9 +35,9 @@ urlpatterns = [
     # Recycle items urls
     path('add_recycle_item/', views.add_recycle_item, name='add_recycle_item'),
     path('recycle_items/', views.view_recycle_items, name='view_recycle_items'),
-    path('my_items/', views.MyItemsView.as_view(), name='view_my_items'),
-    path('mark_unavailable/<int:pk>/', views.MarkAsUnavailableView.as_view(), name='mark_unavailable'),
-    path('delete_item/<int:pk>/', views.DeleteItemView.as_view(), name='delete_item'),
-    path('edit_item/<int:pk>/', views.EditItemView.as_view(), name='edit_item'),
+    path('my_items/', views.view_my_items, name='view_my_items'),
+    path('mark_unavailable/<int:pk>/', views.mark_as_unavailable, name='mark_unavailable'),
+    path('delete_item/<int:pk>/', views.delete_item, name='delete_item'),
+    path('edit_item/<int:pk>/', views.edit_item, name='edit_item'),
     path('item/<int:pk>/', views.recycle_item_detail, name='recycle_item_detail'),
 ]
