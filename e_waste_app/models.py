@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from django.db import models
 from django.contrib.auth.models import User
-
+from django.utils import timezone
 # Create your models here.
 
 
@@ -79,3 +79,19 @@ class RecycleItem(models.Model):
 
     def __str__(self):
         return f'{self.item_type} - {self.category}'
+
+
+#UserHistory
+class UserVisit(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    visit_start = models.DateTimeField()
+    visit_end = models.DateTimeField(null=True, blank=True)
+    visit_duration = models.DurationField(null=True, blank=True)
+
+    def save(self, *args, **kwargs):
+        if self.visit_end and not self.visit_duration:
+            self.visit_duration = self.visit_end - self.visit_start
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f'{self.user.username} - {self.visit_start} to {self.visit_end}'
