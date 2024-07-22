@@ -6,7 +6,7 @@
 <div class="container my-4">
     <h1 class="mb-4 text-center">Hello {{ user }}</h1>
 
-    <!-- General Dashboard -->
+    <!-- General Dashboard
     <div class="mb-5">
         <h2 class="mb-4 text-center">General Dashboard</h2>
         <div class="row mb-4">
@@ -65,7 +65,7 @@
             </div>
         </div>
     </div>
-
+-->
     <!-- Personal Dashboard -->
     <div>
         <h2 class="mb-4 text-center">Personal Dashboard</h2>
@@ -78,7 +78,7 @@
                         <h5 class="card-title mb-0">Average Visit Duration Today</h5>
                     </div>
                     <div class="card-body text-center">
-                        <h2 class="display-4 font-weight-bold">{{ average_visit_duration_today }} mins</h2>
+                        <h2 class="display-4 font-weight-bold">{{ total_visit_duration_today }} </h2>
                         <p class="text-muted">Average time spent on the site today</p>
                     </div>
                 </div>
@@ -92,7 +92,7 @@
                         <h5 class="card-title mb-0">Number of Actions Taken Today</h5>
                     </div>
                     <div class="card-body text-center">
-                        <h2 class="display-4 font-weight-bold">{{ number_of_actions_today }}</h2>
+                        <h2 class="display-4 font-weight-bold">{{ actions_taken_today }}</h2>
                         <p class="text-muted">Actions performed today</p>
                     </div>
                 </div>
@@ -116,21 +116,31 @@
 
             <div class="col-lg-6 mb-4">
                 <!-- Recently Posted Requests -->
-                <div class="card border-dark shadow-sm">
-                    <div class="card-header bg-dark text-white d-flex align-items-center">
-                        <i class="fas fa-list-ul fa-2x mr-3"></i>
-                        <h5 class="card-title mb-0">Recently Posted Requests</h5>
-                    </div>
-                    <div class="card-body">
-                        <ul class="list-group">
-                            {% for request in recently_posted_requests %}
-                                <li class="list-group-item">{{ request }}</li>
-                            {% empty %}
-                                <li class="list-group-item">No requests posted recently.</li>
-                            {% endfor %}
-                        </ul>
-                    </div>
+                <div class="container mt-4">
+    <div class="card border-dark shadow-sm">
+        <div class="card-header bg-dark text-white d-flex align-items-center">
+            <i class="fas fa-list-ul fa-2x mr-3"></i>
+            <h5 class="card-title mb-0">Recently Posted Requests</h5>
+        </div>
+        <div class="card-body">
+            {% if recent_posted_requests %}
+                <div class="list-group">
+                    {% for ad in recent_posted_requests %}
+                        <div class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="mb-1">{{ ad.item_type }} - {{ ad.id }}</h6>
+                                <small class="text-muted">Description: {{ ad.description}}</small><p></p>
+                                <small class="text-muted">Posted on: {{ ad.created_at}}</small>
+                            </div>
+                        </div>
+                    {% endfor %}
                 </div>
+            {% else %}
+                <p class="text-center text-muted">No requests posted recently.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
             </div>
         </div>
 

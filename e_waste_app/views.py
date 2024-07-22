@@ -28,15 +28,15 @@ from django.shortcuts import render, redirect
 from .recycleForms import AddRecycleItemForm, SearchRecycleItemsForm
 
 #userhistory
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-from .models import RecycleItem, Member
 from django.utils import timezone
-from datetime import timedelta, date
-from django.db.models import Count
-from .models import UserVisit
-from django.db.models import Avg, Sum
-from datetime import datetime
+from django.db.models import Count, Avg
+from .models import RecycleItem, UserVisit
+import datetime
+
 
 
 # Create your views here.
@@ -316,6 +316,7 @@ def add_recycle_item(request):
             current_member = Member.objects.get(username=request.user)
             recycling_request.user = current_member
 
+
             if form.cleaned_data['user_profile_contact']:
                 recycling_request.email = current_member.email
                 recycling_request.phone = current_member.phone_number
@@ -327,6 +328,29 @@ def add_recycle_item(request):
 
             # Save the instance to the database
             recycling_request.save()
+            #UserHistory
+            # Increment action taken
+            if 'actions_taken_today' in request.session:
+                request.session['actions_taken_today'] += 1
+            else:
+                request.session['actions_taken_today'] = 1
+
+            # Update the session with the recent post
+            if 'recent_posts' not in request.session:
+                request.session['recent_posts'] = []
+
+            recent_posts = request.session['recent_posts']
+            recent_posts.append({
+                'id': recycling_request.id,
+                'item_type': recycling_request.item_type,
+                'description': recycling_request.description,
+                'created_at': recycling_request.created_at.strftime('%Y-%m-%d %H:%M:%S')  # Store date in ISO format
+            })
+            # Keep only the 5 most recent posts
+            request.session['recent_posts'] = recent_posts[-5:]
+            request.session.modified = True
+
+
             return redirect('e_waste_app:view_recycle_items')
     else:
         form = AddRecycleItemForm()
@@ -407,85 +431,42 @@ class DeleteItemView(LoginRequiredMixin, DeleteView):
 
 
 #Userhistory
-@login_required
-def home(request):
-    now = timezone.now()
-    if request.user.is_authenticated:
-        # End the previous visit if it's still open
-        last_visit = UserVisit.objects.filter(
-            user=request.user,
-            visit_end__isnull=True
-        ).last()
-
-        if last_visit:
-            last_visit.visit_end = now
-            last_visit.save()
-
-        # Start a new visit
-        UserVisit.objects.create(
-            user=request.user,
-            visit_start=now
-        )
-    return render(request, 'e_waste_app/home.html')
 
 @login_required
 def dashboard(request):
-    today = timezone.now().date()
-    start_of_week = today - timedelta(days=today.weekday())
+    #Last Login
+    user = request.user
+    # Track last login time
+    if not user.last_login:
+        user.last_login = timezone.now()
+        user.save()
+    last_login_time = user.last_login
+    # Store last visit time in session
+    if 'last_visit' not in request.session:
+        request.session['last_visit'] = timezone.now().strftime('%Y-%m-%d %H:%M:%S')
 
-    # General Dashboard Data
-    total_users_this_week = Member.objects.filter(date_joined__gte=start_of_week).count()
-    total_ads_expired = RecycleItem.objects.filter(is_active=False).count()
-    total_ads_by_category = RecycleItem.objects.values('category').annotate(total=Count('id'))
+    #Session Posts
+    recent_posts = request.session.get('recent_posts', [])
 
-    # Personal Dashboard Data
-    average_visit_duration_today = get_total_visit_duration_for_user(request.user, today)
-    number_of_actions_today = get_number_of_actions_for_user(request.user, today)
-    most_viewed_ads_today = get_most_viewed_ads_for_user(request.user, today)
-    last_login_time = request.user.last_login
-    profile_completion_status = get_profile_completion_status(request.user)
+    # Update last visit time
+    current_time = timezone.now()
+    request.session['last_visit'] = current_time.strftime('%Y-%m-%d %H:%M:%S')
 
+    # Number of visits today
+
+
+
+
+    total_visit_duration_today = request.session.get('total_visit_duration_today', 0)
+    hours, remainder = divmod(total_visit_duration_today, 3600)
+    minutes, seconds = divmod(remainder, 60)
+    actions_taken_today = request.session.get('actions_taken_today', 0)
+    #last_login_time = request.session.get('last_login_time', 'N/A')
     context = {
-        'user' : request.user,
-        'total_users_this_week': total_users_this_week,
-        'total_ads_expired': total_ads_expired,
-        'total_ads_by_category': total_ads_by_category,
-        'average_visit_duration_today': average_visit_duration_today,
-        'number_of_actions_today': number_of_actions_today,
-        'most_viewed_ads_today': most_viewed_ads_today,
+        'total_visit_duration_today': f"{int(hours)}h {int(minutes)}m {int(seconds)}s",
+        'actions_taken_today': actions_taken_today,
         'last_login_time': last_login_time,
-        'profile_completion_status': profile_completion_status,
+        'recent_posted_requests': recent_posts,
+        #'number_of_visits_today': user_visit.visit_count,
     }
-
     return render(request, 'e_waste_app/dashboard.html', context)
-
-
-# Helper functions (placeholders for actual implementation)
-def get_total_visit_duration_for_user(user, date):
-    start_of_day = timezone.make_aware(datetime.combine(date, datetime.min.time()))
-    end_of_day = timezone.make_aware(datetime.combine(date, datetime.max.time()))
-
-    # Query to get all visits for the user on the given date
-    visits = UserVisit.objects.filter(user=user, visit_start__date=date)
-
-    # Calculate total duration
-    total_duration = visits.aggregate(total_duration=Sum('visit_duration'))['total_duration']
-
-    if total_duration:
-        return str(total_duration)
-    return "No visits recorded"
-
-
-def get_number_of_actions_for_user(user, date):
-    # Implement logic to count number of actions
-    return 0
-
-
-def get_most_viewed_ads_for_user(user, date):
-    # Implement logic to get most viewed ads
-    return []
-
-
-def get_profile_completion_status(user):
-    # Implement logic to check profile completion
-    return "Incomplete"
