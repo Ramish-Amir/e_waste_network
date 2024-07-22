@@ -4,13 +4,19 @@ from django.contrib.auth.views import PasswordResetView, PasswordResetDoneView, 
     PasswordResetCompleteView
 
 from e_waste_app.forms import PasswordResetConfirmForm
-from e_waste_app.views import CustomPasswordResetConfirmView, CustomPasswordResetCompleteView
+from e_waste_app.views import CustomPasswordResetConfirmView, CustomPasswordResetCompleteView, UserRegisterView, \
+    LandingPageView, ActivateAccountView
 
 app_name = 'e_waste_app'
 urlpatterns = [
     path(r'', views.home, name='home'),
     path(r'login/', views.user_login, name='login'),
-    path(r'register/', views.user_register, name='register'),
+    #path(r'register/', views.user_register, name='register'),
+    path(r'register/',UserRegisterView.as_view(), name='register'),
+    path(r'landing_page/', LandingPageView.as_view(), name='landing'),
+
+    path(r'activate/<uidb64>/<token>/',ActivateAccountView.as_view(),name='activate'),
+
     path(r'logout/', views.user_logout, name='logout'),
     path(r'password_reset/', views.password_reset, name='password_reset'),
     path(r'password_reset_done', PasswordResetDoneView.as_view(template_name='e_waste_app/password_reset_done.html'),
