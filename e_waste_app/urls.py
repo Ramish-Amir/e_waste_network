@@ -4,7 +4,8 @@ from django.contrib.auth.views import PasswordResetView, PasswordResetDoneView, 
     PasswordResetCompleteView
 
 from e_waste_app.forms import PasswordResetConfirmForm
-from .views import CustomPasswordResetConfirmView, CustomPasswordResetCompleteView, feedback_view, feedback_thanks_view
+from .views import CustomPasswordResetConfirmView, CustomPasswordResetCompleteView, feedback_view
+from .views import CustomPasswordResetConfirmView, CustomPasswordResetCompleteView, feedback_view
 from django.contrib.auth.views import PasswordResetDoneView
 from e_waste_app.views import CustomPasswordResetConfirmView, CustomPasswordResetCompleteView
 from django.urls import path
@@ -47,6 +48,5 @@ urlpatterns = [
     path('edit_item/<int:pk>/', views.EditItemView.as_view(), name='edit_item'),
     path('search_results/', views.search_results, name='search_results'),
     path('item/<int:pk>/', views.recycle_item_detail, name='recycle_item_detail'),
-    path('feedback/', feedback_view, name='feedback'),
-    path('feedback/thanks/', feedback_thanks_view, name='feedback_thanks'),
+    path('feedback/', views.feedback_view, name='feedback'),
 ]
