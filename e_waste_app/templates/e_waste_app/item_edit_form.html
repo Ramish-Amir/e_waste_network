@@ -1,0 +1,14 @@
+{% extends "e_waste_app/base.html" %}
+{% load crispy_forms_filters %}
+{% block title %}Edit Item{% endblock %}
+{% block content %}
+<div class="container">
+    <h2 class="my-4 text-center">Edit Item</h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <button type="submit" class="btn btn-primary">Save changes</button>
+        <a href="{% url 'e_waste_app:view_my_items' %}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}
