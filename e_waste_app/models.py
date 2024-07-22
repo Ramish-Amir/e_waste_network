@@ -33,6 +33,7 @@ class ContactMessage(models.Model):
     def __str__(self):
         return self.name
 
+
 class RecycleItem(models.Model):
     CATEGORY_CHOICES = [
         ('consumer_electronics', 'Consumer Electronics'),
