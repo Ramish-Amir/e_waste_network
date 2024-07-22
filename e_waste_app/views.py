@@ -198,18 +198,20 @@ def item_details(request, item_id):
     item = get_object_or_404(RecycleItem, id=item_id)
     return render(request, 'e_waste_app/register_item_details.html', {'item': item})
 
+
 def feedback_view(request):
     if request.method == 'POST':
         form = FeedbackForm(request.POST)
         if form.is_valid():
-            form.save()
-            return redirect('feedback_thanks')
+            form.save()  # Assuming the form is saving the data
+            messages.success(request, 'Thanks for giving feedback!')
+            return redirect('e_waste_app:home')  # Redirect to the home page
     else:
         form = FeedbackForm()
-    return render(request, 'feedback.html', {'form': form})
 
-def feedback_thanks_view(request):
-    return render(request, 'feedback_thanks.html')
+    return render(request, 'e_waste_app/feedback.html', {'form': form})
+
+
 def _validate_password(password):
     print('password', password)
     if password is not None:
