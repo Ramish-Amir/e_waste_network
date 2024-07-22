@@ -14,14 +14,14 @@ from django.template.loader import render_to_string
 from django.urls import reverse, reverse_lazy
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
-from django.views.generic import FormView, ListView, DeleteView, TemplateView
-from django.views.generic.edit import UpdateView
-from .forms import PasswordResetConfirmForm, ProfileForm
+from django.views.generic import FormView, ListView, DeleteView, TemplateView, DetailView
+from django.views.generic.edit import UpdateView, CreateView
+from .forms import PasswordResetConfirmForm, ProfileForm, ArticleForm
 from .forms import LoginForm, RegisterForm, PasswordResetForm
 from django.utils import timezone
 from django.contrib import messages
 from .forms import ContactForm
-from .models import Product, Member, RecycleItem, ContactMessage
+from .models import Product, Member, RecycleItem, ContactMessage, Article
 from django.db.models import Q
 from django.shortcuts import render, redirect
 from .recycleForms import AddRecycleItemForm, SearchRecycleItemsForm, EditRecycleItemForm
@@ -156,17 +156,22 @@ def password_reset_done(request):
 class HomeView(TemplateView):
     template_name = 'e_waste_app/home.html'
 
+
 class AboutUsView(TemplateView):
     template_name = 'e_waste_app/aboutus.html'
+
 
 class Article1View(TemplateView):
     template_name = 'e_waste_app/article1.html'
 
+
 class Article2View(TemplateView):
     template_name = 'e_waste_app/article2.html'
 
+
 class Article3View(TemplateView):
     template_name = 'e_waste_app/article3.html'
+
 
 class ContactUsView(FormView):
     template_name = 'e_waste_app/contact_us.html'
@@ -176,6 +181,7 @@ class ContactUsView(FormView):
         form.save()
         messages.success(self.request, 'Your message has been sent successfully!')
         return redirect('contactus')
+
 
 def search_results(request):
     name_query = request.GET.get('name', '')
@@ -397,3 +403,33 @@ def recycle_item_detail(request, pk):
     return render(request, 'e_waste_app/recycle_item_detail.html', context)
 
 
+class ArticleListView(ListView):
+    model = Article
+    template_name = 'e_waste_app/articles_list.html'
+    context_object_name = 'articles'
+
+
+class ArticleDetailView(DetailView):
+    model = Article
+    template_name = 'e_waste_app/article_detail.html'
+    context_object_name = 'article'
+
+
+class ArticleCreateView(CreateView):
+    model = Article
+    form_class = ArticleForm
+    template_name = 'e_waste_app/article_form.html'
+    success_url = reverse_lazy('e_waste_app:article_list')
+
+
+class ArticleUpdateView(UpdateView):
+    model = Article
+    form_class = ArticleForm
+    template_name = 'e_waste_app/article_form.html'
+    success_url = reverse_lazy('e_waste_app:article_list')
+
+
+class ArticleDeleteView(DeleteView):
+    model = Article
+    template_name = 'e_waste_app/article_confirm_delete.html'
+    success_url = reverse_lazy('e_waste_app:article_list')

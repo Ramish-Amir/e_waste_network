@@ -4,7 +4,7 @@ from django.contrib.auth.password_validation import CommonPasswordValidator
 from django.core.exceptions import ValidationError
 from django.forms import ModelForm
 
-from .models import ContactMessage, Member
+from .models import ContactMessage, Member, Article
 from django.contrib.auth.models import User
 
 
@@ -108,3 +108,16 @@ class ProfileForm(ModelForm):
 
         else:
             print(r'user is none')
+
+
+class ArticleForm(forms.ModelForm):
+    class Meta:
+        model = Article
+        fields = ['title', 'content', 'category', 'image']  # Adjust fields as necessary
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['title'].widget.attrs.update({'class': 'form-control', 'placeholder': 'Article Title'})
+        self.fields['content'].widget.attrs.update({'class': 'form-control', 'placeholder': 'Content'})
+        self.fields['category'].widget.attrs.update({'class': 'form-control'})
+        self.fields['image'].widget.attrs.update({'class': 'form-control-file'})
