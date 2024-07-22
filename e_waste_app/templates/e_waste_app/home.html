@@ -1,11 +1,15 @@
+<!-- home.html or any other relevant template -->
+
 {% extends 'e_waste_app/base.html' %}
 {% load static %}
+
 {% block styles %}
 <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css" rel="stylesheet"> <!-- Bootstrap Icons -->
 <style>
 .hero-section {
-    background-color: red;
+    background-color: red; /* Ensure this color is applied */
     background-size: cover;
     background-position: center;
     position: relative;
@@ -77,8 +81,14 @@
 .search-section button {
     border-radius: 50px;
 }
-</style>
 
+.feedback-section {
+    background-color: #f8f9fa; /* Light background color */
+    padding: 2rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+</style>
 {% endblock %}
 
 {% block title %}Home - E-Waste Recycling Network{% endblock %}
@@ -108,9 +118,17 @@
                 </div>
                 <div class="col-md-4 mb-3">
                     <div class="input-group">
-                        <input type="text" name="zipcode" class="form-control form-control-lg" placeholder="Enter Zipcode">
+                        <select name="category" class="form-control form-control-lg">
+                            <option value="">Select Category</option>
+                            <option value="consumer_electronics">Consumer Electronics</option>
+                            <option value="home_appliances">Home Appliances</option>
+                            <option value="office_equipment">Office Equipment</option>
+                            <option value="medical_devices">Medical Devices</option>
+                            <option value="industrial_equipment">Industrial Equipment</option>
+                            <option value="miscellaneous_electronics">Miscellaneous Electronics</option>
+                        </select>
                         <div class="input-group-append">
-                            <span class="input-group-text"><i class="bi bi-geo-alt"></i></span>
+                            <span class="input-group-text"><i class="bi bi-tags"></i></span>
                         </div>
                     </div>
                 </div>
@@ -159,10 +177,15 @@
     </div>
 </section>
 
-<footer class="bg-dark text-white text-center py-3"> </footer>
+<section class="feedback-section text-center py-5">
+    <div class="container">
+        <h2 class="mb-4">Was this page useful?</h2><span></span>
+        <a href="{% url 'e_waste_app:article1' %}" class="btn btn-primary">Give Feedback</a>
+    </div>
+</section>
+
+<footer class="bg-dark text-white text-center py-3"></footer>
 {% endblock %}
-
-
 
 {% block scripts %}
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
