@@ -24,7 +24,8 @@ from .forms import ContactForm
 from .models import Product, Member, RecycleItem, ContactMessage
 from django.db.models import Q
 from django.shortcuts import render, redirect
-from .recycleForms import AddRecycleItemForm, SearchRecycleItemsForm, EditRecycleItemForm
+from .recycleForms import AddRecycleItemForm, SearchRecycleItemsForm, EditRecycleItemForm, HomepageSearchForm
+
 
 # Create your views here.
 
@@ -153,6 +154,11 @@ def password_reset_done(request):
 
 class HomeView(TemplateView):
     template_name = 'e_waste_app/home.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = HomepageSearchForm()
+        return context
 
 class AboutUsView(TemplateView):
     template_name = 'e_waste_app/aboutus.html'
