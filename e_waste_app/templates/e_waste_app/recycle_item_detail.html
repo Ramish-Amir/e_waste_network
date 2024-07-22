@@ -10,7 +10,11 @@
     <h2 class="my-4">{{ item.item_type }}</h2>
     <div class="row">
         <div class="col-md-6">
-            <img src="{{ item.image.url }}" class="img-fluid" alt="Item image">
+            {% if item.image %}
+                <img class="card-img-top" src="{{ item.image.url }}" alt="Card image cap">
+            {% else %}
+                <img class="card-img-top" src="https://media.istockphoto.com/id/1147544807/vector/thumbnail-image-vector-graphic.jpg?s=612x612&w=0&k=20&c=rnCKVbdxqkjlcs3xH87-9gocETqpspHFXu5dIGB4wuM=" alt="Default image">
+            {% endif %}
         </div>
         <div class="col-md-6">
             <p><strong>Description:</strong> {{ item.description }}</p>

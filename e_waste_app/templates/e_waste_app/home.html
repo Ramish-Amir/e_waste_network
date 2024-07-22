@@ -1,23 +1,27 @@
-<!-- home.html or any other relevant template -->
-
 {% extends 'e_waste_app/base.html' %}
+{% load crispy_forms_filters %}
 {% load static %}
-
 {% block styles %}
 <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css" rel="stylesheet"> <!-- Bootstrap Icons -->
 <style>
 .hero-section {
-    background-color: red; /* Ensure this color is applied */
+    background-image: url("{% static 'images/home_page.jpeg' %}"); /* Update with your image path */
     background-size: cover;
     background-position: center;
     position: relative;
     min-height: 60vh;
+    color: white; /* Ensure text color is white for contrast */
 }
 
 .overlay {
-    background-color: rgba(0, 0, 0, 0.5); /* Example of semi-transparent overlay */
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black overlay */
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
 }
 
 .card {
@@ -74,14 +78,6 @@
     background-color: #218838;
 }
 
-.search-section input {
-    border-radius: 50px;
-}
-
-.search-section button {
-    border-radius: 50px;
-}
-
 .feedback-section {
     background-color: #f8f9fa; /* Light background color */
     padding: 2rem;
@@ -97,47 +93,15 @@
 <section class="hero-section text-center py-5">
     <div class="overlay d-flex align-items-center justify-content-center">
         <div class="container py-5 my-5">
-            <h1 class="display-4 font-weight-bold animate__animated animate__fadeInDown">Welcome to the E-Waste Recycling Network</h1>
+            <h1 class="home-header display-4 font-weight-bold animate__animated animate__fadeInDown">Welcome to E-Waste Link</h1>
             <p class="lead mb-4 animate__animated animate__fadeInUp animate__delay-1s">Connecting individuals and organizations for responsible e-waste recycling and a cleaner planet.</p>
-            <a href="#search" class="btn btn-success btn-lg animate__animated animate__fadeInUp animate__delay-2s">Get Started</a>
+            <a href="{% url 'e_waste_app:view_recycle_items' %}" class="btn btn-success btn-lg animate__animated animate__fadeInUp animate__delay-2s">Get Started</a>
         </div>
     </div>
 </section>
 
 <section id="search" class="search-section py-5">
-    <div class="container">
-        <form method="GET" action="/search_results/">
-            <div class="row justify-content-center">
-                <div class="col-md-4 mb-3">
-                    <div class="input-group">
-                        <input type="text" name="name" class="form-control form-control-lg" placeholder="Search by Name...">
-                        <div class="input-group-append">
-                            <span class="input-group-text"><i class="bi bi-search"></i></span>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4 mb-3">
-                    <div class="input-group">
-                        <select name="category" class="form-control form-control-lg">
-                            <option value="">Select Category</option>
-                            <option value="consumer_electronics">Consumer Electronics</option>
-                            <option value="home_appliances">Home Appliances</option>
-                            <option value="office_equipment">Office Equipment</option>
-                            <option value="medical_devices">Medical Devices</option>
-                            <option value="industrial_equipment">Industrial Equipment</option>
-                            <option value="miscellaneous_electronics">Miscellaneous Electronics</option>
-                        </select>
-                        <div class="input-group-append">
-                            <span class="input-group-text"><i class="bi bi-tags"></i></span>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4 mb-3">
-                    <button type="submit" class="btn btn-success btn-lg btn-block">Search</button>
-                </div>
-            </div>
-        </form>
-    </div>
+    {% include 'e_waste_app/home_search.html' %}
 </section>
 
 <section class="articles-section py-5">
@@ -184,7 +148,6 @@
     </div>
 </section>
 
-<footer class="bg-dark text-white text-center py-3"></footer>
 {% endblock %}
 
 {% block scripts %}

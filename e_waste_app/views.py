@@ -27,14 +27,13 @@ from .forms import FeedbackForm
 from .models import Member, RecycleItem
 from django.db.models import Q
 from django.shortcuts import render, redirect
-from .recycleForms import AddRecycleItemForm, SearchRecycleItemsForm, EditRecycleItemForm
+from .recycleForms import AddRecycleItemForm, SearchRecycleItemsForm, EditRecycleItemForm, HomepageSearchForm
+
 
 # Create your views here.
 
 
-# Convert CATEGORY_CHOICES to a dictionary
-category_choices_dict = dict(RecycleItem.CATEGORY_CHOICES)
-condition_choices_dict = dict(RecycleItem.CONDITION_CHOICES)
+# condition_choices_dict = dict(RecycleItem.CONDITION_CHOICES)
 
 
 def profile(request):
@@ -158,6 +157,11 @@ def password_reset_done(request):
 
 class HomeView(TemplateView):
     template_name = 'e_waste_app/home.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = HomepageSearchForm()
+        return context
 
 class AboutUsView(TemplateView):
     template_name = 'e_waste_app/aboutus.html'
@@ -358,55 +362,58 @@ def view_recycle_items(request):
     context = {
         'form': form,
         'results': results,
-        'category_choices': category_choices_dict,
-        'condition_choices': condition_choices_dict,
+        'category_choices': dict(RecycleItem.CATEGORY_CHOICES),
+        'condition_choices': dict(RecycleItem.CONDITION_CHOICES),
     }
 
     return render(request, 'e_waste_app/search_items.html', context)
 
 
-class MyItemsView(LoginRequiredMixin, ListView):
-    template_name = 'e_waste_app/my_items.html'
-    context_object_name = 'my_items'
-    model = RecycleItem
-    ordering = ['-created_at']
+@login_required
+def view_my_items(request):
+    current_member = Member.objects.get(username=request.user)
+    my_items = RecycleItem.objects.filter(user=current_member).order_by('-created_at')
+    active_items = my_items.filter(is_active=True)
+    inactive_items = my_items.filter(is_active=False)
 
-    def get_queryset(self):
-        current_member = Member.objects.get(username=self.request.user)
-        return RecycleItem.objects.filter(user=current_member).order_by('-created_at')
+    context = {
+        'active_items': active_items,
+        'inactive_items': inactive_items,
+        'category_choices': dict(RecycleItem.CATEGORY_CHOICES),
+        'condition_choices': dict(RecycleItem.CONDITION_CHOICES),
+    }
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        my_items = context['my_items']
-        context['active_items'] = my_items.filter(is_active=True)
-        context['inactive_items'] = my_items.filter(is_active=False)
-        context['category_choices'] = category_choices_dict
-        context['condition_choices'] = condition_choices_dict
-        return context
+    return render(request, 'e_waste_app/my_items.html', context)
 
 
-class MarkAsUnavailableView(LoginRequiredMixin, UpdateView):
-    model = RecycleItem
-    fields = []
-    success_url = reverse_lazy('e_waste_app:view_my_items')
-
-    def form_valid(self, form):
-        item = form.save(commit=False)
-        item.is_active = False
-        item.save()
-        return super().form_valid(form)
+@login_required
+def mark_as_unavailable(request, pk):
+    item = get_object_or_404(RecycleItem, pk=pk, user=request.user)
+    item.is_active = False
+    item.save()
+    return redirect('e_waste_app:view_my_items')
 
 
-class DeleteItemView(LoginRequiredMixin, DeleteView):
-    model = RecycleItem
-    success_url = reverse_lazy('e_waste_app:view_my_items')
+@login_required
+def delete_item(request, pk):
+    item = get_object_or_404(RecycleItem, pk=pk, user=request.user)
+    if request.method == "POST":
+        item.delete()
+        return redirect(reverse_lazy('e_waste_app:view_my_items'))
+    return redirect('e_waste_app:view_my_items')
 
 
-class EditItemView(LoginRequiredMixin, UpdateView):
-    model = RecycleItem
-    form_class = EditRecycleItemForm
-    template_name = 'e_waste_app/item_edit_form.html'
-    success_url = reverse_lazy('e_waste_app:view_my_items')
+@login_required
+def edit_item(request, pk):
+    item = get_object_or_404(RecycleItem, pk=pk, user=request.user)
+    if request.method == "POST":
+        form = EditRecycleItemForm(request.POST, request.FILES, instance=item)
+        if form.is_valid():
+            form.save()
+            return redirect(reverse_lazy('e_waste_app:view_my_items'))
+    else:
+        form = EditRecycleItemForm(instance=item)
+    return render(request, 'e_waste_app/item_edit_form.html', {'form': form})
 
 
 def recycle_item_detail(request, pk):
