@@ -1,6 +1,9 @@
+from datetime import timezone
+
 from django.contrib.auth.models import User
 from django.db import models
 from django.contrib.auth.models import User
+
 
 # Create your models here.
 
@@ -12,11 +15,11 @@ class Member(User):
     ]
     phone_number = models.CharField(max_length=15, blank=True, null=True)
     address = models.CharField(max_length=300, blank=True, null=True)
-    city = models.CharField(blank=True,max_length=50)
-    province = models.CharField(blank=True,max_length=50)
+    city = models.CharField(blank=True, max_length=50)
+    province = models.CharField(blank=True, max_length=50)
     postal_code = models.CharField(max_length=20, blank=True, null=True)
-    country = models.CharField(blank=True,max_length=50, null=True)
-    user_type = models.CharField(blank=True,max_length=20, choices=USER_TYPE_CHOICES)
+    country = models.CharField(blank=True, max_length=50, null=True)
+    user_type = models.CharField(blank=True, max_length=20, choices=USER_TYPE_CHOICES)
     e_waste_interests = models.TextField(blank=True, null=True)
     recycling_preferences = models.TextField(blank=True, null=True)
 
@@ -36,7 +39,7 @@ class ContactMessage(models.Model):
 
 class Product(models.Model):
     name = models.CharField(max_length=100)
-    email= models.EmailField()
+    email = models.EmailField()
     description = models.TextField()
     address = models.CharField(max_length=200)
     zipcode = models.CharField(max_length=10)
@@ -80,3 +83,25 @@ class RecycleItem(models.Model):
 
     def __str__(self):
         return f'{self.item_type} - {self.category}'
+
+
+class Article(models.Model):
+
+    CATEGORY_CHOICES = [
+        ('recycling', 'E-Waste Recycling'),
+        ('impact', 'Environmental Impact'),
+        ('innovation', 'Technology and Innovation'),
+        ('awareness', 'Consumer Awareness'),
+        ('health', 'Health Impacts'),
+        ('devices', 'Electronic Devices'),
+        ('best_practices', 'E-Waste Management Best Practices'),
+    ]
+    title = models.CharField(max_length=200)
+    content = models.TextField()
+    category = models.CharField(max_length=50, choices=CATEGORY_CHOICES, default='impact')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    image = models.ImageField(upload_to='articles/', blank=True, null=True)
+
+    def __str__(self):
+        return self.title

@@ -40,4 +40,12 @@ urlpatterns = [
     path('delete_item/<int:pk>/', views.DeleteItemView.as_view(), name='delete_item'),
     path('edit_item/<int:pk>/', views.EditItemView.as_view(), name='edit_item'),
     path('item/<int:pk>/', views.recycle_item_detail, name='recycle_item_detail'),
+
+    # Article URLs
+    path('articles/', views.ArticleListView.as_view(), name='article_list'),
+    path('article/<int:pk>/', views.ArticleDetailView.as_view(), name='article_detail'),
+    path('article/add/', views.ArticleCreateView.as_view(), name='article_create'),
+    path('article/<int:pk>/edit/', views.ArticleUpdateView.as_view(), name='article_update'),
+    path('article/<int:pk>/delete/', views.ArticleDeleteView.as_view(), name='article_delete'),
+
 ]
