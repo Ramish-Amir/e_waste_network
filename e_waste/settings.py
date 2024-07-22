@@ -59,7 +59,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     #userhistory
-    'e_waste_app.middleware.TrackUserVisitsMiddleware',
+    'e_waste_app.middleware.TrackVisitDurationMiddleware',
 ]
 
 ROOT_URLCONF = 'e_waste.urls'
@@ -119,7 +119,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Toronto'
 
 USE_I18N = True
 

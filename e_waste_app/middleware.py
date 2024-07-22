@@ -1,24 +1,27 @@
-from datetime import datetime
-from django.utils.deprecation import MiddlewareMixin
-from .models import UserVisit
+# middlewares.py
 
-class TrackUserVisitsMiddleware(MiddlewareMixin):
+import datetime
+from django.utils.deprecation import MiddlewareMixin
+
+class TrackVisitDurationMiddleware(MiddlewareMixin):
     def process_request(self, request):
-        if request.user.is_authenticated:
-            # Start a new visit
-            request.session['visit_start'] = datetime.now().isoformat()
+        if not request.session.get('visit_start'):
+            request.session['visit_start'] = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        if not request.session.get('actions_taken_today'):
+            request.session['actions_taken_today'] = 0
+        return None
 
     def process_response(self, request, response):
-        if request.user.is_authenticated:
-            visit_start = request.session.get('visit_start')
-            if visit_start:
-                visit_start = datetime.fromisoformat(visit_start)
-                visit_end = datetime.now()
-
-                # Save visit duration
-                UserVisit.objects.create(
-                    user=request.user,
-                    visit_start=visit_start,
-                    visit_end=visit_end
-                )
+        visit_start_str = request.session.get('visit_start')
+        if visit_start_str:
+            try:
+                visit_start = datetime.datetime.strptime(visit_start_str, '%Y-%m-%d %H:%M:%S')
+                visit_duration = (datetime.datetime.now() - visit_start).total_seconds()
+                if 'total_visit_duration_today' in request.session:
+                    request.session['total_visit_duration_today'] += visit_duration
+                else:
+                    request.session['total_visit_duration_today'] = visit_duration
+            except (ValueError, TypeError):
+                request.session['visit_start'] = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        request.session['visit_start'] = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         return response
