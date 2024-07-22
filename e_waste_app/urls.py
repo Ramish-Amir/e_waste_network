@@ -4,7 +4,7 @@ from django.contrib.auth.views import PasswordResetView, PasswordResetDoneView, 
     PasswordResetCompleteView
 
 from e_waste_app.forms import PasswordResetConfirmForm
-from e_waste_app.views import CustomPasswordResetConfirmView, CustomPasswordResetCompleteView
+from .views import CustomPasswordResetConfirmView, CustomPasswordResetCompleteView, feedback_view, feedback_thanks_view
 from django.urls import path
 from e_waste_app.views import (
     HomeView,
@@ -34,9 +34,11 @@ urlpatterns = [
     path('article3/', Article3View.as_view(), name='article3'),
     path('contact/', ContactUsView.as_view(), name='contactus'),
     path('profile/', views.profile, name='profile'),
-    path('search/', views.search_results, name='search_results'),
     path('add_recycle_item/', views.add_recycle_item, name='add_recycle_item'),
     path('recycle_items/', views.view_recycle_items, name='view_recycle_items'),
-    path('item/<int:pk>/', views.recycle_item_detail, name='recycle_item_detail'),  # New path for detail view
+    path('search_results/', views.search_results, name='search_results'),
+    path('item/<int:pk>/', views.recycle_item_detail, name='recycle_item_detail'),
+    path('feedback/', feedback_view, name='feedback'),
+    path('feedback/thanks/', feedback_thanks_view, name='feedback_thanks'),
 ]
 

@@ -13,16 +13,18 @@ from django.template.loader import render_to_string
 from django.urls import reverse, reverse_lazy
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
-from django.views.generic import FormView, TemplateView
+from django.views.generic import FormView, TemplateView, ListView
 from .forms import PasswordResetConfirmForm, ProfileForm
 from .forms import LoginForm, RegisterForm, PasswordResetForm
 from django.utils import timezone
 from django.contrib import messages
 from .forms import ContactForm
-from .models import Product, Member, RecycleItem
+from .forms import FeedbackForm
+from .models import Member, RecycleItem
 from django.db.models import Q
 from django.shortcuts import render, redirect
 from .recycleForms import AddRecycleItemForm, SearchRecycleItemsForm
+
 
 # Create your views here.
 
@@ -171,18 +173,35 @@ class ContactUsView(FormView):
         return redirect('contactus')
 
 def search_results(request):
-    name_query = request.GET.get('name', '')
-    zipcode_query = request.GET.get('zipcode', '')
+    query = request.GET.get('name')
+    category = request.GET.get('category')
 
-    # Filter products based on name and zipcode
-    products = Product.objects.filter(name__icontains=name_query, zipcode=zipcode_query)
+    filters = {}
+    if query:
+        filters['item_type__icontains'] = query
+    if category:
+        filters['category'] = category
 
-    context = {
-        'products': products
-    }
-    return render(request, 'e_waste_app/search_results.html', context)
+    results = RecycleItem.objects.filter(**filters)
 
+    return render(request, 'e_waste_app/search_results.html', {'results': results})
 
+def item_details(request, item_id):
+    item = get_object_or_404(RecycleItem, id=item_id)
+    return render(request, 'e_waste_app/register_item_details.html', {'item': item})
+
+def feedback_view(request):
+    if request.method == 'POST':
+        form = FeedbackForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('feedback_thanks')
+    else:
+        form = FeedbackForm()
+    return render(request, 'feedback.html', {'form': form})
+
+def feedback_thanks_view(request):
+    return render(request, 'feedback_thanks.html')
 def _validate_password(password):
     print('password', password)
     if password is not None:
