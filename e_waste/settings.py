@@ -58,6 +58,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    #userhistory
+    'e_waste_app.middleware.TrackUserVisitsMiddleware',
 ]
 
 ROOT_URLCONF = 'e_waste.urls'

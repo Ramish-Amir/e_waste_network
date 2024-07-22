@@ -1,4 +1,3 @@
-from datetime import timedelta
 from http.client import HTTPResponse
 
 from django.contrib.auth.decorators import login_required
@@ -28,12 +27,18 @@ from django.db.models import Q
 from django.shortcuts import render, redirect
 from .recycleForms import AddRecycleItemForm, SearchRecycleItemsForm
 
+#userhistory
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from .models import RecycleItem, Member
 from django.utils import timezone
-from datetime import timedelta
+from datetime import timedelta, date
 from django.db.models import Count
+from .models import UserVisit
+from django.db.models import Avg, Sum
+from datetime import datetime
+
+
 # Create your views here.
 
 
@@ -400,6 +405,29 @@ class DeleteItemView(LoginRequiredMixin, DeleteView):
     success_url = reverse_lazy('e_waste_app:view_my_items')
 
 
+
+#Userhistory
+@login_required
+def home(request):
+    now = timezone.now()
+    if request.user.is_authenticated:
+        # End the previous visit if it's still open
+        last_visit = UserVisit.objects.filter(
+            user=request.user,
+            visit_end__isnull=True
+        ).last()
+
+        if last_visit:
+            last_visit.visit_end = now
+            last_visit.save()
+
+        # Start a new visit
+        UserVisit.objects.create(
+            user=request.user,
+            visit_start=now
+        )
+    return render(request, 'e_waste_app/home.html')
+
 @login_required
 def dashboard(request):
     today = timezone.now().date()
@@ -411,14 +439,14 @@ def dashboard(request):
     total_ads_by_category = RecycleItem.objects.values('category').annotate(total=Count('id'))
 
     # Personal Dashboard Data
-    # Assuming you have a mechanism to track visit durations
-    average_visit_duration_today = get_average_visit_duration_for_user(request.user, today)
+    average_visit_duration_today = get_total_visit_duration_for_user(request.user, today)
     number_of_actions_today = get_number_of_actions_for_user(request.user, today)
     most_viewed_ads_today = get_most_viewed_ads_for_user(request.user, today)
     last_login_time = request.user.last_login
     profile_completion_status = get_profile_completion_status(request.user)
 
     context = {
+        'user' : request.user,
         'total_users_this_week': total_users_this_week,
         'total_ads_expired': total_ads_expired,
         'total_ads_by_category': total_ads_by_category,
@@ -433,9 +461,19 @@ def dashboard(request):
 
 
 # Helper functions (placeholders for actual implementation)
-def get_average_visit_duration_for_user(user, date):
-    # Implement logic to calculate average visit duration
-    return "0 mins"
+def get_total_visit_duration_for_user(user, date):
+    start_of_day = timezone.make_aware(datetime.combine(date, datetime.min.time()))
+    end_of_day = timezone.make_aware(datetime.combine(date, datetime.max.time()))
+
+    # Query to get all visits for the user on the given date
+    visits = UserVisit.objects.filter(user=user, visit_start__date=date)
+
+    # Calculate total duration
+    total_duration = visits.aggregate(total_duration=Sum('visit_duration'))['total_duration']
+
+    if total_duration:
+        return str(total_duration)
+    return "No visits recorded"
 
 
 def get_number_of_actions_for_user(user, date):
