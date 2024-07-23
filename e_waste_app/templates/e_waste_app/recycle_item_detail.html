@@ -23,7 +23,7 @@
             <p><strong>Condition:</strong> {{ condition_choices|get_item:item.condition }}</p>
             <p><strong>Created At:</strong> {{ item.created_at }}</p>
             <p><strong>Address:</strong> {{ item.address }}, {{ item.city }} {{ item.postal_code }}</p>
-            <p><strong>Phone:</strong> {{ item.phone }}</p>
+            <p><strong>Phone:</strong> {{ item.phone_number }}</p>
         </div>
     </div>
             <a href="{% url 'e_waste_app:view_recycle_items' %}" class="btn btn-primary mt-4">Back to Search</a>
