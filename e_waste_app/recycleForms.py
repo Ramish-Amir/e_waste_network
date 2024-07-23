@@ -58,3 +58,30 @@ class SearchRecycleItemsForm(forms.Form):
 
         self.helper = FormHelper()
         self.helper.add_input(Submit('search', 'Search'))
+
+
+class EditRecycleItemForm(forms.ModelForm):
+    class Meta:
+        model = RecycleItem
+        fields = ['item_type', 'description', 'condition', 'category', 'email', 'phone', 'address', 'city', 'province',
+                  'postal_code', 'country', 'image']
+
+
+class HomepageSearchForm(forms.Form):
+    keyword = forms.CharField(required=False, label='')
+    category = forms.ChoiceField(choices=[('', 'Categories (All)')] + RecycleItem.CATEGORY_CHOICES, required=False,
+                                 label='')
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['keyword'].widget.attrs.update({
+            'placeholder': 'Enter search keyword',
+            'class': 'search-home-input'
+        })
+        self.fields['category'].widget.attrs.update({
+            'placeholder': 'Category',
+            'class': 'search-home-input'
+        })
+
+        self.helper = FormHelper()
+        self.helper.add_input(Submit('search', 'Search'))

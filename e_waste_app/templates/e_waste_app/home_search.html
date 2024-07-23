@@ -1,0 +1,61 @@
+{% load crispy_forms_filters %}
+
+<style>
+    .search-wrap {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        column-gap: 10px;
+    }
+
+    .input-wrap {
+        display: flex;
+        justify-content: space-between;
+        align-items: center !important;
+        width: 100%;
+        border: 1px solid #ced4da;
+        border-radius: 0.3rem;
+        overflow: hidden;
+        transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out
+    }
+
+    .search-home-input {
+        width: 100%;
+        border: none;
+        padding: 8px 16px;
+
+    }
+
+    .form-control, .custom-select {
+        border: none !important;
+    }
+
+    .search-button-wrap {
+        border: none;
+    }
+
+    .search-button {
+        padding: 6px 12px !important;
+        font-size: 17px !important;
+    }
+
+
+
+</style>
+<div class="container">
+        <form method="GET" action="/recycle_items/">
+            <div class="search-wrap">
+                <div class="input-wrap">
+                    {{ form.keyword }}
+                    <span class="input-group-text"><i class="bi bi-search"></i></span>
+                </div>
+                <div class="input-wrap">
+                    {{ form.category }}
+                    <span class="input-group-text"><i class="bi bi-stack"></i></span>
+                </div>
+                <div class="input-wrap search-button-wrap">
+                    <button type="submit" class="btn btn-success btn-lg btn-block search-button">Search</button>
+                </div>
+            </div>
+        </form>
+    </div>

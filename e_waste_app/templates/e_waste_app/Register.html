@@ -1,17 +1,17 @@
-{% extends 'e_waste_app/static/base.html' %}
+{% extends 'e_waste_app/base.html' %}
 {% load crispy_forms_filters %}
 {% block title %}Register - E-Waste Recycling Network{% endblock %}
 {% block content %}
-<div class="container content-section">
+<div class="container mt-4">
     <h2>Register</h2>
     {% if messages %}
-        <div class="alert alert-success">
-            {% for message in messages %}
-                {{ message }}
-            {% endfor %}
+        {% for message in messages %}
+        <div class="alert-danger">
+              <p style="color: red">{{ message }}</p>
         </div>
+       {% endfor %}
     {% endif %}
-    <form method="post" novalidate>
+    <form method="post">
         {% csrf_token %}
         <div class="form-group">
             <label for="id_name"></label>
@@ -29,8 +29,7 @@
             <label for="id_confirm_password"></label>
             {{ form.confirm_password|as_crispy_field }}
         </div>
-
-        <button type="submit" class="btn btn-primary">Send</button>
+        <button type="submit" class="btn btn-primary">Register</button>
     </form>
 </div>
 {% endblock %}
