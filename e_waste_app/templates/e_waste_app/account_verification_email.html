@@ -1,0 +1,13 @@
+{% autoescape off %}
+Hello {{ username }},
+
+Thank you for registering at {{ domain }}.
+
+Please click the link below to activate your account:
+http://{{ domain }}{% url 'e_waste_app:activate' uidb64=uid token=token %}
+
+If you did not request this change, please ignore this email.
+
+Thank you,
+The E-Waste Network Team
+{% endautoescape %}

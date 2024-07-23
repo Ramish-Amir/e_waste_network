@@ -12,6 +12,7 @@ class Member(User):
         ('individual', 'Individual'),
         ('organization', 'Organization'),
     ]
+    avatar = models.ImageField(upload_to='avatars/', blank=True, null=True)
     phone_number = models.CharField(max_length=15, blank=True, null=True)
     address = models.CharField(max_length=300, blank=True, null=True)
     city = models.CharField(blank=True, max_length=50)
@@ -31,17 +32,6 @@ class ContactMessage(models.Model):
     email = models.EmailField()
     message = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return self.name
-
-
-class Product(models.Model):
-    name = models.CharField(max_length=100)
-    email = models.EmailField()
-    description = models.TextField()
-    address = models.CharField(max_length=200)
-    zipcode = models.CharField(max_length=10)
 
     def __str__(self):
         return self.name
@@ -82,6 +72,14 @@ class RecycleItem(models.Model):
 
     def __str__(self):
         return f'{self.item_type} - {self.category}'
+
+
+class Feedback(models.Model):
+    feedback = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Feedback from {self.created_at}"
 
 
 class Article(models.Model):

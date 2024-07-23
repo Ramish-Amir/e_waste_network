@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 import os
 from pathlib import Path
 
+from django.core.checks import templates
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -26,9 +28,18 @@ SECRET_KEY = 'django-insecure-z3yrs^ei#^!m)0f5sqki0))4lm%gs49ya_06#6hs-*9u&o7tg3
 DEBUG = True
 
 ALLOWED_HOSTS = []
-EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
-#MAIL_BACKEND = 'django.core.mail.backends.emailbased.EmailBackend'
-EMAIL_FILE_PATH = r'C:\Users\anilk\OneDrive\Desktop\internet applicaction distributed systems\project_new\e_waste_network\e_waste_app\templates\email'
+#EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'ewastenetwork@gmail.com'
+#EMAIL_HOST_PASSWORD = 'atgm ktae lxbx zxzn'
+EMAIL_HOST_PASSWORD = 'lrxk vzlg njlx hjjv'
+DEFAULT_FROM_EMAIL = 'ewastenetwork@gmail.com'
+
+# EMAIL_FILE_PATH = r'C:\Users\anilk\OneDrive\Desktop\internet applicaction distributed systems\project_new\e_waste_network\e_waste_app\templates\email'
+# EMAIL_FILE_PATH = r'C:\Users\anilk\OneDrive\Desktop\internet applicaction distributed systems\project_new\e_waste_network\e_waste_app\templates\email'
 
 '''if not os.path.exists(EMAIL_FILE_PATH):
     os.makedirs(EMAIL_FILE_PATH)
@@ -65,7 +76,8 @@ LOGIN_URL = '/login'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates']
+        #'DIRS': [BASE_DIR / 'templates']
+        'DIRS': [os.path.join(BASE_DIR, 'templates')]
         ,
         'APP_DIRS': True,
         'OPTIONS': {
@@ -129,7 +141,7 @@ USE_TZ = True
 
 # settings.py
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'e_waste_app/static')]
 
 # Media files (Uploaded files)
 MEDIA_URL = '/media/'

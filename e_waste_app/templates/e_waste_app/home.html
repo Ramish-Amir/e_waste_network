@@ -1,19 +1,27 @@
 {% extends 'e_waste_app/base.html' %}
+{% load crispy_forms_filters %}
 {% load static %}
 {% block styles %}
 <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css" rel="stylesheet"> <!-- Bootstrap Icons -->
 <style>
 .hero-section {
-    background-color: red;
+    background-image: url("{% static 'images/home_page.jpeg' %}"); /* Update with your image path */
     background-size: cover;
     background-position: center;
     position: relative;
     min-height: 60vh;
+    color: white; /* Ensure text color is white for contrast */
 }
 
 .overlay {
-    background-color: rgba(0, 0, 0, 0.5); /* Example of semi-transparent overlay */
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black overlay */
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
 }
 
 .card {
@@ -70,15 +78,13 @@
     background-color: #218838;
 }
 
-.search-section input {
-    border-radius: 50px;
-}
-
-.search-section button {
-    border-radius: 50px;
+.feedback-section {
+    background-color: #f8f9fa; /* Light background color */
+    padding: 2rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 </style>
-
 {% endblock %}
 
 {% block title %}Home - E-Waste Recycling Network{% endblock %}
@@ -87,39 +93,15 @@
 <section class="hero-section text-center py-5">
     <div class="overlay d-flex align-items-center justify-content-center">
         <div class="container py-5 my-5">
-            <h1 class="display-4 font-weight-bold animate__animated animate__fadeInDown">Welcome to the E-Waste Recycling Network</h1>
+            <h1 class="home-header display-4 font-weight-bold animate__animated animate__fadeInDown">Welcome to E-Waste Link</h1>
             <p class="lead mb-4 animate__animated animate__fadeInUp animate__delay-1s">Connecting individuals and organizations for responsible e-waste recycling and a cleaner planet.</p>
-            <a href="#search" class="btn btn-success btn-lg animate__animated animate__fadeInUp animate__delay-2s">Get Started</a>
+            <a href="{% url 'e_waste_app:view_recycle_items' %}" class="btn btn-success btn-lg animate__animated animate__fadeInUp animate__delay-2s">Get Started</a>
         </div>
     </div>
 </section>
 
 <section id="search" class="search-section py-5">
-    <div class="container">
-        <form method="GET" action="/search_results/">
-            <div class="row justify-content-center">
-                <div class="col-md-4 mb-3">
-                    <div class="input-group">
-                        <input type="text" name="name" class="form-control form-control-lg" placeholder="Search by Name...">
-                        <div class="input-group-append">
-                            <span class="input-group-text"><i class="bi bi-search"></i></span>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4 mb-3">
-                    <div class="input-group">
-                        <input type="text" name="zipcode" class="form-control form-control-lg" placeholder="Enter Zipcode">
-                        <div class="input-group-append">
-                            <span class="input-group-text"><i class="bi bi-geo-alt"></i></span>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4 mb-3">
-                    <button type="submit" class="btn btn-success btn-lg btn-block">Search</button>
-                </div>
-            </div>
-        </form>
-    </div>
+    {% include 'e_waste_app/home_search.html' %}
 </section>
 
 <section class="articles-section py-5">
@@ -159,10 +141,14 @@
     </div>
 </section>
 
-<footer class="bg-dark text-white text-center py-3"> </footer>
+<section class="feedback-section text-center py-5">
+    <div class="container">
+        <h2 class="mb-4">Was this page useful?</h2><span></span>
+        <a href="{% url 'e_waste_app:feedback' %}" class="btn btn-primary">Give Feedback</a>
+    </div>
+</section>
+
 {% endblock %}
-
-
 
 {% block scripts %}
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
