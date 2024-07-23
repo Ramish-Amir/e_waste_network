@@ -13,20 +13,24 @@ from django.urls import reverse, reverse_lazy
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.views import View
-from django.views.generic import FormView, CreateView, TemplateView
+from django.views.generic import CreateView
+from django.views.generic import FormView, TemplateView
 from .forms import PasswordResetConfirmForm, ProfileForm
 from .forms import LoginForm, RegisterForm, PasswordResetForm
 from django.utils import timezone
 from django.contrib import messages
 from .forms import ContactForm
-from .models import Product, Member, RecycleItem
+from .forms import FeedbackForm
+from .models import Member, RecycleItem
 from django.db.models import Q
-from django.shortcuts import render, redirect
-from .recycleForms import AddRecycleItemForm, SearchRecycleItemsForm
+from django.shortcuts import render, redirect, get_object_or_404
 from django.utils.encoding import force_str
+from .recycleForms import AddRecycleItemForm, SearchRecycleItemsForm, EditRecycleItemForm, HomepageSearchForm
 
 
 # Create your views here.
+
+
 def profile(request):
     user = request.user
     print('username: ', user.username)
@@ -80,19 +84,24 @@ class UserRegisterView(CreateView):
     success_url = reverse_lazy('e_waste_app:landing')
 
     def send_verification_email(self, user, request):
-        subject = "Activate your account"
-        email_template_name = "e_waste_app/account_verification_email.html"
-        c = {
-            'email': user.email,
-            'domain': get_current_site(request).domain,
-            'site_name': 'E Waste Network',
-            'uid': urlsafe_base64_encode(force_bytes(user.pk)),
-            'token': default_token_generator.make_token(user),
-            'protocol': 'https' if request.is_secure() else 'http',
-            'username': user.username
-        }
-        email = render_to_string(email_template_name, c)
-        send_mail(subject, email, "ewastenetwork@gmail.com", [user.email])
+        try:
+            subject = "Activate your account"
+            email_template_name = "e_waste_app/account_verification_email.html"
+            c = {
+                'email': user.email,
+                'domain': get_current_site(request).domain,
+                'site_name': 'E Waste Network',
+                'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+                'token': default_token_generator.make_token(user),
+                'protocol': 'https' if request.is_secure() else 'http',
+                'username': user.username
+            }
+            email = render_to_string(email_template_name, c)
+            send_mail(subject, email, "ewastenetwork@gmail.com", [user.email])
+            print(f"Verification email sent to {user.email}")
+        except Exception as e:
+            print(f"Failed to send verification email: {e}")
+            raise e
 
     def _validate_password(self, password):
         print('password', password)
@@ -186,7 +195,7 @@ def user_logout(request):
 def password_reset(request):
     if request.method == 'GET':
         return render(request, 'e_waste_app/Password_reset.html', {'PasswordResetForm': PasswordResetForm()})
-    else:  #POST
+    else:
         form = PasswordResetForm(request.POST)
         if form.is_valid():
             email = form.cleaned_data.get('email')
@@ -215,53 +224,71 @@ def password_reset_done(request):
     return render(request, 'e_waste_app/password_reset_done.html')
 
 
-def home(request):
-    return render(request, 'e_waste_app/home.html')
+class HomeView(TemplateView):
+    template_name = 'e_waste_app/home.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = HomepageSearchForm()
+        return context
 
 
-def footer(request):
-    return render(request, 'e_waste_app/footer.html')
+class AboutUsView(TemplateView):
+    template_name = 'e_waste_app/aboutus.html'
 
 
-def aboutus(request):
-    return render(request, 'e_waste_app/aboutus.html')
+class Article1View(TemplateView):
+    template_name = 'e_waste_app/article1.html'
 
 
-def article1(request):
-    return render(request, 'e_waste_app/article1.html')
+class Article2View(TemplateView):
+    template_name = 'e_waste_app/article2.html'
 
 
-def article2(request):
-    return render(request, 'e_waste_app/article2.html')
+class Article3View(TemplateView):
+    template_name = 'e_waste_app/article3.html'
 
 
-def article3(request):
-    return render(request, 'e_waste_app/article3.html')
+class ContactUsView(FormView):
+    template_name = 'e_waste_app/contact_us.html'
+    form_class = ContactForm
+
+    def form_valid(self, form):
+        form.save()
+        messages.success(self.request, 'Your message has been sent successfully!')
+        return redirect('contactus')
+
+# def search_results(request):
+#     query = request.GET.get('name')
+#     category = request.GET.get('category')
+#
+#     filters = {}
+#     if query:
+#         filters['item_type__icontains'] = query
+#     if category:
+#         filters['category'] = category
+#
+#     results = RecycleItem.objects.filter(**filters)
+#
+#     return render(request, 'e_waste_app/search_results.html', {'results': results})
 
 
-def contact_us(request):
+# def item_details(request, item_id):
+#     item = get_object_or_404(RecycleItem, id=item_id)
+#     return render(request, 'e_waste_app/register_item_details.html', {'item': item})
+
+
+def feedback_view(request):
     if request.method == 'POST':
-        form = ContactForm(request.POST)
+        form = FeedbackForm(request.POST)
         if form.is_valid():
-            form.save()
-            messages.success(request, 'Your message has been sent successfully!')
-            return redirect('contactus')
+            form.save()  # Assuming the form is saving the data
+            messages.success(request, 'Thanks for giving feedback!')
+            return redirect('e_waste_app:home')  # Redirect to the home page
     else:
-        form = ContactForm()
-    return render(request, 'e_waste_app/contact_us.html', {'form': form})
+        form = FeedbackForm()
 
-
-def search_results(request):
-    name_query = request.GET.get('name', '')
-    zipcode_query = request.GET.get('zipcode', '')
-
-    # Filter products based on name and zipcode
-    products = Product.objects.filter(name__icontains=name_query, zipcode=zipcode_query)
-
-    context = {
-        'products': products
-    }
-    return render(request, 'e_waste_app/search_results.html', context)
+    return render(request, 'e_waste_app/feedback.html', {'form': form})
 
 
 def _validate_password(password):
@@ -364,8 +391,8 @@ def add_recycle_item(request):
             recycling_request = form.save(commit=False)
             current_member = Member.objects.get(username=request.user)
             recycling_request.user = current_member
+
             if form.cleaned_data['user_profile_contact']:
-                print("USER PROFILE CONTACT")
                 recycling_request.email = current_member.email
                 recycling_request.phone = current_member.phone_number
                 recycling_request.address = current_member.address
@@ -384,7 +411,7 @@ def add_recycle_item(request):
 
 def view_recycle_items(request):
     form = SearchRecycleItemsForm(request.GET or None)
-    results = RecycleItem.objects.all().order_by('-created_at')
+    results = RecycleItem.objects.filter(is_active=True).order_by('-created_at')
 
     if form.is_valid():
         keyword = form.cleaned_data.get('keyword')
@@ -407,14 +434,71 @@ def view_recycle_items(request):
         if sort_by:
             results = results.order_by(sort_by)
 
-    # Convert CATEGORY_CHOICES to a dictionary
-    category_choices_dict = dict(RecycleItem.CATEGORY_CHOICES)
-    condition_choices_dict = dict(RecycleItem.CONDITION_CHOICES)
-
     context = {
         'form': form,
         'results': results,
-        'category_choices': category_choices_dict,
-        'condition_choices': condition_choices_dict,
+        'category_choices': dict(RecycleItem.CATEGORY_CHOICES),
+        'condition_choices': dict(RecycleItem.CONDITION_CHOICES),
     }
     return render(request, 'e_waste_app/search_items.html', context)
+
+
+@login_required
+def view_my_items(request):
+    current_member = Member.objects.get(username=request.user)
+    my_items = RecycleItem.objects.filter(user=current_member).order_by('-created_at')
+    active_items = my_items.filter(is_active=True)
+    inactive_items = my_items.filter(is_active=False)
+
+    context = {
+        'active_items': active_items,
+        'inactive_items': inactive_items,
+        'category_choices': dict(RecycleItem.CATEGORY_CHOICES),
+        'condition_choices': dict(RecycleItem.CONDITION_CHOICES),
+    }
+
+    return render(request, 'e_waste_app/my_items.html', context)
+
+
+@login_required
+def mark_as_unavailable(request, pk):
+    item = get_object_or_404(RecycleItem, pk=pk, user=request.user)
+    item.is_active = False
+    item.save()
+    return redirect('e_waste_app:view_my_items')
+
+
+@login_required
+def delete_item(request, pk):
+    item = get_object_or_404(RecycleItem, pk=pk, user=request.user)
+    if request.method == "POST":
+        item.delete()
+        return redirect(reverse_lazy('e_waste_app:view_my_items'))
+    return redirect('e_waste_app:view_my_items')
+
+
+@login_required
+def edit_item(request, pk):
+    item = get_object_or_404(RecycleItem, pk=pk, user=request.user)
+    if request.method == "POST":
+        form = EditRecycleItemForm(request.POST, request.FILES, instance=item)
+        if form.is_valid():
+            form.save()
+            return redirect(reverse_lazy('e_waste_app:view_my_items'))
+    else:
+        form = EditRecycleItemForm(instance=item)
+    return render(request, 'e_waste_app/item_edit_form.html', {'form': form})
+
+
+def recycle_item_detail(request, pk):
+    item = get_object_or_404(RecycleItem, pk=pk)
+    context = {
+        'item': item,
+        'category_choices': dict(RecycleItem.CATEGORY_CHOICES),
+        'condition_choices': dict(RecycleItem.CONDITION_CHOICES),
+    }
+    return render(request, 'e_waste_app/recycle_item_detail.html', context)
+
+
+def not_found(request, exception):
+    return render(request, 'e_waste_app/404.html', status=404)

@@ -35,16 +35,6 @@ class ContactMessage(models.Model):
         return self.name
 
 
-class Product(models.Model):
-    name = models.CharField(max_length=100)
-    description = models.TextField()
-    address = models.CharField(max_length=200)
-    zipcode = models.CharField(max_length=10)
-
-    def __str__(self):
-        return self.name
-
-
 class RecycleItem(models.Model):
     CATEGORY_CHOICES = [
         ('consumer_electronics', 'Consumer Electronics'),
@@ -80,3 +70,11 @@ class RecycleItem(models.Model):
 
     def __str__(self):
         return f'{self.item_type} - {self.category}'
+
+
+class Feedback(models.Model):
+    feedback = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Feedback from {self.created_at}"

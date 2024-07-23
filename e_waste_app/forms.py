@@ -3,8 +3,7 @@ from django.contrib.auth.forms import SetPasswordForm
 from django.contrib.auth.password_validation import CommonPasswordValidator
 from django.core.exceptions import ValidationError
 from django.forms import ModelForm
-from .models import ContactMessage, Member
-from django.contrib.auth.models import User
+from .models import ContactMessage, Member, Feedback
 
 
 class LoginForm(forms.Form):
@@ -96,3 +95,12 @@ class ProfileForm(ModelForm):
             self.fields['recycling_preferences'].initial = getattr(user, 'recycling_preferences', '')
         else:
             print(r'user is none')
+
+
+class FeedbackForm(forms.ModelForm):
+    class Meta:
+        model = Feedback
+        fields = ['feedback']
+        widgets = {
+            'feedback': forms.Textarea(attrs={'class': 'form-control', 'rows': 4}),
+        }
