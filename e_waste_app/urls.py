@@ -15,7 +15,7 @@ from e_waste_app.views import (
     Article1View,
     Article2View,
     Article3View,
-    ContactUsView,    # Import other views as needed
+    ContactUsView,
 )
 
 app_name = 'e_waste_app'
@@ -37,7 +37,6 @@ urlpatterns = [
     path('article3/', Article3View.as_view(), name='article3'),
     path('contact/', ContactUsView.as_view(), name='contactus'),
     path('profile/', views.profile, name='profile'),
-    path('search/', views.search_results, name='search_results'),
 
     # Recycle items urls
     path('add_recycle_item/', views.add_recycle_item, name='add_recycle_item'),

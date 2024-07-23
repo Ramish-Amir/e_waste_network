@@ -184,23 +184,24 @@ class ContactUsView(FormView):
         messages.success(self.request, 'Your message has been sent successfully!')
         return redirect('contactus')
 
-def search_results(request):
-    query = request.GET.get('name')
-    category = request.GET.get('category')
+# def search_results(request):
+#     query = request.GET.get('name')
+#     category = request.GET.get('category')
+#
+#     filters = {}
+#     if query:
+#         filters['item_type__icontains'] = query
+#     if category:
+#         filters['category'] = category
+#
+#     results = RecycleItem.objects.filter(**filters)
+#
+#     return render(request, 'e_waste_app/search_results.html', {'results': results})
 
-    filters = {}
-    if query:
-        filters['item_type__icontains'] = query
-    if category:
-        filters['category'] = category
 
-    results = RecycleItem.objects.filter(**filters)
-
-    return render(request, 'e_waste_app/search_results.html', {'results': results})
-
-def item_details(request, item_id):
-    item = get_object_or_404(RecycleItem, id=item_id)
-    return render(request, 'e_waste_app/register_item_details.html', {'item': item})
+# def item_details(request, item_id):
+#     item = get_object_or_404(RecycleItem, id=item_id)
+#     return render(request, 'e_waste_app/register_item_details.html', {'item': item})
 
 
 def feedback_view(request):
@@ -426,3 +427,5 @@ def recycle_item_detail(request, pk):
     return render(request, 'e_waste_app/recycle_item_detail.html', context)
 
 
+def not_found(request, exception):
+    return render(request, '404.html', status=404)
