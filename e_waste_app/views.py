@@ -413,20 +413,42 @@ def add_recycle_item(request):
             current_member = Member.objects.get(username=request.user)
             recycling_request.user = current_member
 
-            if form.cleaned_data['user_profile_contact']:
-                recycling_request.email = current_member.email
-                recycling_request.phone = current_member.phone_number
-                recycling_request.address = current_member.address
-                recycling_request.city = current_member.city
-                recycling_request.province = current_member.province
-                recycling_request.postal_code = current_member.postal_code
-                recycling_request.country = current_member.country
+            fields = [
+                ('email', 'Email'),
+                ('phone_number', 'Phone number'),
+                ('address', 'Address'),
+                ('city', 'City'),
+                ('province', 'Province'),
+                ('postal_code', 'Postal code'),
+                ('country', 'Country')
+            ]
 
-            # Save the instance to the database
-            recycling_request.save()
-            return redirect('e_waste_app:view_recycle_items')
+            if form.cleaned_data['user_profile_contact']:
+                # Check for missing fields in the profile
+                missing_fields = [label for field, label in fields if not getattr(current_member, field)]
+
+                if missing_fields:
+                    form.add_error(None, "Your profile is missing contact information. "
+                                         "Either complete your profile first or enter details manually.")
+                else:
+                    # Populate recycling_request with current_member's data
+                    for field, _ in fields:
+                        setattr(recycling_request, field, getattr(current_member, field))
+            else:
+                # Check if the form is missing required contact fields
+                missing_form_fields = [label for field, label in fields if not form.cleaned_data.get(field)]
+
+                if missing_form_fields:
+                    print("Missing fields: ", missing_form_fields)
+                    form.add_error(None, "Please provide the missing contact information in the form.")
+
+            if not form.errors:
+                # Save the instance to the database
+                recycling_request.save()
+                return redirect('e_waste_app:view_recycle_items')
     else:
         form = AddRecycleItemForm()
+
     return render(request, 'e_waste_app/add_item.html', {'form': form})
 
 
