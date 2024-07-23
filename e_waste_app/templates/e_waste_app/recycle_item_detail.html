@@ -1,0 +1,30 @@
+{% extends 'e_waste_app/base.html' %}
+{% load custom_filters %}
+{% load crispy_forms_filters %}
+{% load crispy_forms_tags %}
+
+{% block title %}Item Details{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2 class="my-4">{{ item.item_type }}</h2>
+    <div class="row">
+        <div class="col-md-6">
+            {% if item.image %}
+                <img class="card-img-top" src="{{ item.image.url }}" alt="Card image cap">
+            {% else %}
+                <img class="card-img-top" src="https://media.istockphoto.com/id/1147544807/vector/thumbnail-image-vector-graphic.jpg?s=612x612&w=0&k=20&c=rnCKVbdxqkjlcs3xH87-9gocETqpspHFXu5dIGB4wuM=" alt="Default image">
+            {% endif %}
+        </div>
+        <div class="col-md-6">
+            <p><strong>Description:</strong> {{ item.description }}</p>
+            <p><strong>Category:</strong> {{ category_choices|get_item:item.category }}</p>
+            <p><strong>Condition:</strong> {{ condition_choices|get_item:item.condition }}</p>
+            <p><strong>Created At:</strong> {{ item.created_at }}</p>
+            <p><strong>Address:</strong> {{ item.address }}, {{ item.city }} {{ item.postal_code }}</p>
+            <p><strong>Phone:</strong> {{ item.phone }}</p>
+        </div>
+    </div>
+            <a href="{% url 'e_waste_app:view_recycle_items' %}" class="btn btn-primary mt-4">Back to Search</a>
+</div>
+{% endblock %}

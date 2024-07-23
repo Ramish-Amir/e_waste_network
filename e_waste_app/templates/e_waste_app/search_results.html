@@ -1,32 +1,28 @@
-<!-- templates/e_waste_app/search_results.html -->
+<!-- search_results.html -->
 
-{% extends 'e_waste_app/static/base.html' %}
+{% extends 'e_waste_app/base.html' %}
 
-{% block title %}Search Results - E-Waste Recycling Network{% endblock %}
+{% block title %}Search Results{% endblock %}
 
 {% block content %}
-<section class="search-results-section py-5">
-    <div class="container">
-        <h2>Search Results</h2>
-        <div class="row">
-            {% if products %}
-                {% for product in products %}
-                <div class="col-md-4 mb-4">
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">{{ product.name }}</h5>
-                            <p class="card-text">{{ product.description }}</p>
-                            <p class="card-text">Address: {{ product.address }}, {{ product.zipcode }}</p>
-                        </div>
+<div class="container">
+    <h2 class="my-4">Search Results</h2>
+    <div class="row">
+        {% for item in results %}
+        <div class="col-md-4 mb-4">
+            <a href="{% url 'e_waste_app:recycle_item_detail' item.id %}" class="text-decoration-none">
+                <div class="card shadow-lg border-0 rounded-lg transform-hover">
+                    <img src="{{ item.image.url }}" class="card-img-top" alt="{{ item.item_type }}">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ item.item_type }}</h5>
+                        <p class="card-text">{{ item.description|truncatewords:20 }}</p>
                     </div>
                 </div>
-                {% endfor %}
-            {% else %}
-                <div class="col-md-12">
-                    <p>No products found.</p>
-                </div>
-            {% endif %}
+            </a>
         </div>
+        {% empty %}
+        <p>No items found matching your criteria.</p>
+        {% endfor %}
     </div>
-</section>
+</div>
 {% endblock %}

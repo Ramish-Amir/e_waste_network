@@ -38,7 +38,8 @@ EMAIL_HOST_USER = 'ewastenetwork@gmail.com'
 EMAIL_HOST_PASSWORD = 'lrxk vzlg njlx hjjv'
 DEFAULT_FROM_EMAIL = 'ewastenetwork@gmail.com'
 
-EMAIL_FILE_PATH = r'C:\Users\anilk\OneDrive\Desktop\internet applicaction distributed systems\project_new\e_waste_network\e_waste_app\templates\email'
+# EMAIL_FILE_PATH = r'C:\Users\anilk\OneDrive\Desktop\internet applicaction distributed systems\project_new\e_waste_network\e_waste_app\templates\email'
+# EMAIL_FILE_PATH = r'C:\Users\anilk\OneDrive\Desktop\internet applicaction distributed systems\project_new\e_waste_network\e_waste_app\templates\email'
 
 '''if not os.path.exists(EMAIL_FILE_PATH):
     os.makedirs(EMAIL_FILE_PATH)
@@ -138,7 +139,9 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
+# settings.py
 STATIC_URL = '/static/'
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'e_waste_app/static')]
 
 # Media files (Uploaded files)
 MEDIA_URL = '/media/'
