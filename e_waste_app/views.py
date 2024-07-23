@@ -403,33 +403,69 @@ def recycle_item_detail(request, pk):
     return render(request, 'e_waste_app/recycle_item_detail.html', context)
 
 
-class ArticleListView(ListView):
-    model = Article
-    template_name = 'e_waste_app/articles_list.html'
-    context_object_name = 'articles'
+def article_list_view(request):
+    articles = Article.objects.all()
+    return render(request, 'e_waste_app/articles_list.html', {'articles': articles})
 
 
-class ArticleDetailView(DetailView):
-    model = Article
-    template_name = 'e_waste_app/article_detail.html'
-    context_object_name = 'article'
+def article_detail_view(request, pk):
+    article = get_object_or_404(Article, pk=pk)
+    return render(request, 'e_waste_app/article_detail.html', {'article': article})
 
 
-class ArticleCreateView(CreateView):
-    model = Article
-    form_class = ArticleForm
-    template_name = 'e_waste_app/article_form.html'
-    success_url = reverse_lazy('e_waste_app:article_list')
+@login_required
+def member_articles(request):
+    articles = Article.objects.filter(author=request.user)
+    return render(request, 'e_waste_app/member_articles.html', {'articles': articles})
 
 
-class ArticleUpdateView(UpdateView):
-    model = Article
-    form_class = ArticleForm
-    template_name = 'e_waste_app/article_form.html'
-    success_url = reverse_lazy('e_waste_app:article_list')
+@login_required
+def article_create_view(request):
+    if request.method == 'POST':
+        form = ArticleForm(request.POST, request.FILES)
+        if form.is_valid():
+            article = form.save(commit=False)
+            print(request.user)
+            article.author = Member.objects.get(username=request.user)
+            # Set the author to the current user
+            article.save()
+            messages.success(request, 'Article created successfully!')
+            return redirect(reverse_lazy('e_waste_app:article_list'))
+    else:
+        form = ArticleForm()
+    return render(request, 'e_waste_app/article_form.html', {'form': form})
 
 
-class ArticleDeleteView(DeleteView):
-    model = Article
-    template_name = 'e_waste_app/article_confirm_delete.html'
-    success_url = reverse_lazy('e_waste_app:article_list')
+@login_required
+def article_update_view(request, pk):
+    article = get_object_or_404(Article, pk=pk)
+
+    if request.method == 'POST':
+        form = ArticleForm(request.POST, instance=article)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Article updated successfully!')
+            return redirect(reverse_lazy('e_waste_app:article_list'))
+    else:
+        if article.author.username != request.user.username:
+            messages.error(request, 'You are not authorized to edit this article.')
+            return redirect('e_waste_app:article_list')
+        form = ArticleForm(instance=article)
+
+    return render(request, 'e_waste_app/article_form.html', {'form': form})
+
+
+@login_required
+def article_delete_view(request, pk):
+    article = get_object_or_404(Article, pk=pk)
+
+    if article.author.username != request.user.username:
+        messages.error(request, 'You are not authorized to delete this article.')
+        return redirect('e_waste_app:article_list')
+
+    if request.method == 'POST':
+        article.delete()
+        messages.success(request, 'Article deleted successfully!')
+        return redirect(reverse_lazy('e_waste_app:article_list'))
+
+    return render(request, 'e_waste_app/article_confirm_delete.html', {'article': article})

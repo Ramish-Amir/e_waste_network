@@ -88,8 +88,10 @@ class PasswordResetConfirmForm(SetPasswordForm):
 class ProfileForm(ModelForm):
     class Meta:
         model = Member
-        fields = ['username','first_name', 'last_name', 'email', 'phone_number', 'address', 'city', 'province', 'postal_code',
+        fields = ['username', 'first_name', 'last_name', 'email', 'phone_number', 'address', 'city', 'province',
+                  'postal_code',
                   'country', 'country', 'user_type', 'e_waste_interests', 'recycling_preferences']
+
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
@@ -113,7 +115,7 @@ class ProfileForm(ModelForm):
 class ArticleForm(forms.ModelForm):
     class Meta:
         model = Article
-        fields = ['title', 'content', 'category', 'image']  # Adjust fields as necessary
+        fields = ['title', 'content', 'category', 'image', 'is_featured']  # Include is_featured here
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -121,3 +123,4 @@ class ArticleForm(forms.ModelForm):
         self.fields['content'].widget.attrs.update({'class': 'form-control', 'placeholder': 'Content'})
         self.fields['category'].widget.attrs.update({'class': 'form-control'})
         self.fields['image'].widget.attrs.update({'class': 'form-control-file'})
+        self.fields['is_featured'].widget.attrs.update({'class': 'form-check-input'})
