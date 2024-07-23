@@ -1,4 +1,5 @@
 {% extends 'e_waste_app/base.html' %}
+{% load static %}
 {% load custom_filters %}
 {% load crispy_forms_filters %}
 {% load crispy_forms_tags %}
@@ -10,7 +11,11 @@
     <h2 class="my-4">{{ item.item_type }}</h2>
     <div class="row">
         <div class="col-md-6">
-            <img src="{{ item.image.url }}" class="img-fluid" alt="Item image">
+            {% if item.image %}
+                <img class="card-img-top" src="{{ item.image.url }}" alt="Card image cap">
+            {% else %}
+                <img class="card-img-top" src="{% static 'images/placeholder.jpg' %}" alt="Default image">
+            {% endif %}
         </div>
         <div class="col-md-6">
             <p><strong>Description:</strong> {{ item.description }}</p>
@@ -19,7 +24,6 @@
             <p><strong>Created At:</strong> {{ item.created_at }}</p>
             <p><strong>Address:</strong> {{ item.address }}, {{ item.city }} {{ item.postal_code }}</p>
             <p><strong>Phone:</strong> {{ item.phone }}</p>
-            <p><strong>Email:</strong> {{ item.email }}</p>
         </div>
     </div>
             <a href="{% url 'e_waste_app:view_recycle_items' %}" class="btn btn-primary mt-4">Back to Search</a>

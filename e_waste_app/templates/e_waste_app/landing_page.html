@@ -1,0 +1,10 @@
+{% extends "e_waste_app/static/base.html" %}
+
+{% block content %}
+<div class="container">
+    <h1>Welcome to E-Waste Network!</h1>
+    <p>Thank you for registering. Please check your email to activate your account.</p>
+    <p>If you don't see the email in your inbox, please check your spam or junk folder.</p>
+    <a href="{% url 'e_waste_app:login' %}" class="btn btn-primary">Go to Login</a>
+</div>
+{% endblock %}
