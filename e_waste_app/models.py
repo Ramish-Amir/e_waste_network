@@ -83,12 +83,8 @@ class RecycleItem(models.Model):
 
 #UserHistory
 class UserVisit(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    visit_date = models.DateField(default=timezone.now)
-    visit_count = models.PositiveIntegerField(default=1)
-
-    class Meta:
-        unique_together = ('user', 'visit_date')
+    user = models.ForeignKey(Member, on_delete=models.CASCADE)
+    visit_time = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
-        return f"{self.user.username} - {self.visit_date}"
+        return f'Visit by {self.user} at {self.visit_time}'

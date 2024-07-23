@@ -60,6 +60,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     #userhistory
     'e_waste_app.middleware.TrackVisitDurationMiddleware',
+    'e_waste_app.middleware.TrackUserLoginMiddleware'
 ]
 
 ROOT_URLCONF = 'e_waste.urls'
