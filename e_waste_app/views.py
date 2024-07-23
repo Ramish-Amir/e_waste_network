@@ -35,6 +35,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from django.db.models import Count, Avg
 from .models import RecycleItem, UserVisit
+from datetime import date
 import datetime
 
 
@@ -179,14 +180,26 @@ def aboutus(request):
 
 
 def article1(request):
+    #actions = request.session
+    if 'actions_taken_today' in request.session:
+        request.session['actions_taken_today'] += 1
+    else:
+        request.session['actions_taken_today'] = 1
     return render(request, 'e_waste_app/article1.html')
 
 
 def article2(request):
+    if 'actions_taken_today' in request.session:
+        request.session['actions_taken_today'] += 1
+    else:
+        request.session['actions_taken_today'] = 1
     return render(request, 'e_waste_app/article2.html')
 
-
 def article3(request):
+    if 'actions_taken_today' in request.session:
+        request.session['actions_taken_today'] += 1
+    else:
+        request.session['actions_taken_today'] = 1
     return render(request, 'e_waste_app/article3.html')
 
 
@@ -197,6 +210,7 @@ def contact_us(request):
             form.save()
             messages.success(request, 'Your message has been sent successfully!')
             return redirect('contactus')
+
     else:
         form = ContactForm()
     return render(request, 'e_waste_app/contact_us.html', {'form': form})
@@ -360,7 +374,6 @@ def add_recycle_item(request):
 def view_recycle_items(request):
     form = SearchRecycleItemsForm(request.GET or None)
     results = RecycleItem.objects.filter(is_active=True).order_by('-created_at')
-
     if form.is_valid():
         keyword = form.cleaned_data.get('keyword')
         category = form.cleaned_data.get('category')
@@ -417,6 +430,7 @@ class MarkAsUnavailableView(LoginRequiredMixin, UpdateView):
     fields = []
     success_url = reverse_lazy('e_waste_app:view_my_items')
 
+
     def form_valid(self, form):
         item = form.save(commit=False)
         item.is_active = False
@@ -430,8 +444,8 @@ class DeleteItemView(LoginRequiredMixin, DeleteView):
 
 
 
-#Userhistory
 
+#Userhistory
 @login_required
 def dashboard(request):
     #Last Login
@@ -453,8 +467,9 @@ def dashboard(request):
     request.session['last_visit'] = current_time.strftime('%Y-%m-%d %H:%M:%S')
 
     # Number of visits today
-
-
+    today = date.today().strftime("%Y-%m-%d")
+    session_key = f"visits_{today}"
+    visits_today = request.session.get(session_key, 0)
 
 
     total_visit_duration_today = request.session.get('total_visit_duration_today', 0)
@@ -467,6 +482,6 @@ def dashboard(request):
         'actions_taken_today': actions_taken_today,
         'last_login_time': last_login_time,
         'recent_posted_requests': recent_posts,
-        #'number_of_visits_today': user_visit.visit_count,
+        'number_of_visits_today': visits_today,
     }
     return render(request, 'e_waste_app/dashboard.html', context)
