@@ -5,12 +5,21 @@
     <div class="col-md-8">
     <h2>Profile</h2>
     {% if messages %}
-            {% for message in messages %}
-              {% if message.tags == 'error' %}
-                {{ message }}
-              {% endif %}
-            {% endfor %}
-    {% endif %}
+                {% for message in messages %}
+                    {% if message.tags == 'error' %}
+                        {% if not forloop.first %}
+                            <hr>
+                        {% endif %}
+                        <div class="alert alert-danger">{{ message }}</div>
+                    {% elif message.tags == 'success' %}
+                        {% if not forloop.first %}
+                            <hr>
+                        {% endif %}
+                        <div class="alert alert-success">{{ message }}</div>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+
     <form method="post">
         {% csrf_token %}
         <div class="form-group">
@@ -48,14 +57,6 @@
         <div class="form-group">
             <label for="id_user_type"></label>
             {{ form.user_type|as_crispy_field }}
-        </div>
-        <div class="form-group">
-            <label for="id_ewaste_interests"></label>
-            {{ form.e_waste_interests|as_crispy_field }}
-        </div>
-        <div class="form-group">
-            <label for="id_recycling_preferences"></label>
-            {{ form.recycling_preferences|as_crispy_field }}
         </div>
         <button type="submit" class="btn btn-primary">Save Changes</button>
     </form>

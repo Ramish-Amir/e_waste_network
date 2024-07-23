@@ -30,21 +30,38 @@ from .recycleForms import AddRecycleItemForm, SearchRecycleItemsForm, EditRecycl
 
 # Create your views here.
 
-
+@login_required()
 def profile(request):
+    if not request.user.is_authenticated:
+        messages.error(request, 'You must be logged in to view your profile.')
+        return redirect('e_waste_app:login')
+
     user = request.user
     print('username: ', user.username)
-    member_id = request.session.get('member_id')
-    member = Member.objects.get(pk=member_id)
-    print('member: ', member_id)
-    print('member username ', Member.objects.get(pk=member_id).username, "is authenticated: ", member.is_authenticated)
+    if request.user.is_authenticated:
+        member_id = request.user.pk
+        try:
+            member = Member.objects.get(pk=member_id)
+        except Member.DoesNotExist:
+            messages.error(request, 'Member profile not found.')
+            return redirect('e_waste_app:home')
+    else:
+        try:
+            member_id = request.session.get('member_id')
+            member = Member.objects.get(pk=member_id)
+        except Member.DoesNotExist:
+            messages.error(request, 'Member profile not found.')
+            return redirect('e_waste_app:home')
+
+    #print('member: ', member_id)
+    #print('member username ', Member.objects.get(pk=member_id).username, "is authenticated: ", member.is_authenticated)
     if request.method == 'POST':
         form = ProfileForm(request.POST, request.FILES, instance=member)  # Bind the form with the existing instance
         if form.is_valid():
             form.save()  # Update the existing instance
             return redirect('e_waste_app:home')
         else:
-            print("Form errors:", form.errors)
+            messages.error(request, 'Please correct the errors.')
             return render(request, 'e_waste_app/profile.html', {'form': form})
     else:
         form = ProfileForm(instance=member)  # Initialize form with the existing instance
@@ -99,8 +116,10 @@ class UserRegisterView(CreateView):
             email = render_to_string(email_template_name, c)
             send_mail(subject, email, "ewastenetwork@gmail.com", [user.email])
             print(f"Verification email sent to {user.email}")
+            messages.info(request, f"Verification email sent to {user.email}")
         except Exception as e:
             print(f"Failed to send verification email: {e}")
+            messages.error(request, f"Failed to send verification email: {e}")
             raise e
 
     def _validate_password(self, password):
@@ -130,8 +149,7 @@ class UserRegisterView(CreateView):
             form.add_error('username', 'Username already taken')
             return self.form_invalid(form)
         print('username', username, 'user doesnt exists')
-
-        # Validate password here if needed
+        # Validate password here
         try:
             self._validate_password(password)
         except ValidationError as e:
@@ -140,7 +158,7 @@ class UserRegisterView(CreateView):
 
         # Create the user
         member = Member.objects.create_user(username=username, email=email, password=password)
-        member.is_active = False;
+        member.is_active = False
         member.save()
 
         # Send verification email
@@ -150,7 +168,7 @@ class UserRegisterView(CreateView):
         return redirect(self.success_url)
 
     def form_invalid(self, form):
-        messages.error(self.request, 'Invalid input or password do not match')
+        messages.error(self.request, 'There was an issue with your input or Password did not match.')
         return super().form_invalid(form)
 
 
@@ -167,7 +185,7 @@ def user_login(request):
                     current_login = timezone.now().strftime("%d/%m/%Y %H:%M:%S")
                     request.session['last_login'] = current_login
                     request.session.set_expiry(60 * 60)
-                    messages.success(request, 'Login successful')
+                    #messages.success(request, 'Login successful')
                     print("successful login")
                     return redirect('e_waste_app:home')
 
@@ -217,6 +235,7 @@ def password_reset(request):
                 send_mail(subject, email, "ewastenetwork@gmail.com", [user.email])
             return redirect('e_waste_app:password_reset_done')
         else:
+            messages.error(request, 'Please correct the errors below.')
             return render(request, 'e_waste_app/Password_reset.html', {'PasswordResetForm': PasswordResetForm()})
 
 
@@ -343,24 +362,25 @@ class CustomPasswordResetConfirmView(FormView):
         if user is not None and default_token_generator.check_token(user, token):
             password1 = form.cleaned_data.get('new_password1')
             password2 = form.cleaned_data.get('new_password2')
-            print('--new_password1:', password1)  # Debugging line
-            print('--new_password2:', password2)  # Debugging line
+            #print('--new_password1:', password1)  # Debugging line
+            #print('--new_password2:', password2)  # Debugging line
 
             if password1 != password2:
-                form.add_error(None, 'Passwords do not match')
+                #form.add_error('password', 'Passwords do not match')
+                #raise ValidationError('Passwords do not match')
+                messages.error(self.request, 'Password do not match.')
+
                 return self.form_invalid(form)
 
             try:
                 print('password1:', password1)  # Debugging line
                 print('password2:', password2)  # Debugging line
-
+                user.set_password(password1)
+                user.save()
+                return super().form_valid(form)
             except ValidationError as e:
-                form.add_error(None, e.message)
+                form.add_error(None, str(e))
                 return self.form_invalid(form)
-
-            user.set_password(password1)
-            user.save()
-            return super().form_valid(form)
         else:
             form.add_error(None, 'Invalid token or user ID')
             return self.form_invalid(form)

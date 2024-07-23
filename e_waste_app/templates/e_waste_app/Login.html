@@ -11,17 +11,17 @@
         <div class="card" style="width: 28rem;">
             <div class="card-body">
                 <!-- Display messages -->
-                {% if messages %}
-                <div class="messages">
+            {% if messages %}
+                <div class="mb-4">
                     {% for message in messages %}
-                     {% if message.tags == 'error' %}
-                        <div class="alert {{ message.tags }}">
-                            <p style="color: red">{{ message }}</p>
-                        </div>
+                        {% if message.tags == 'error' %}
+                            <div class="alert alert-danger mb-3" role="alert">
+                                {{ message }}
+                            </div>
                         {% endif %}
                     {% endfor %}
                 </div>
-                {% endif %}
+            {% endif %}
                 <h2 class="card-title text-center mb-4">Login</h2>
                 <form method="POST" action="{% url 'e_waste_app:login' %}">
                     {% csrf_token %}
