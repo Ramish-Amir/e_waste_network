@@ -85,6 +85,7 @@ class RecycleItem(models.Model):
         return f'{self.item_type} - {self.category}'
 
 
+
 class Article(models.Model):
 
     CATEGORY_CHOICES = [
