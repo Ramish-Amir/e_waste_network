@@ -4,8 +4,7 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.contrib.auth.models import User
 
-
-# Create your models here.
+from e_waste import settings
 
 
 class Member(User):
@@ -85,9 +84,7 @@ class RecycleItem(models.Model):
         return f'{self.item_type} - {self.category}'
 
 
-
 class Article(models.Model):
-
     CATEGORY_CHOICES = [
         ('recycling', 'E-Waste Recycling'),
         ('impact', 'Environmental Impact'),
@@ -97,12 +94,17 @@ class Article(models.Model):
         ('devices', 'Electronic Devices'),
         ('best_practices', 'E-Waste Management Best Practices'),
     ]
+
+    # ForeignKey to link the article to the user who created it
+    author = models.ForeignKey(Member, on_delete=models.CASCADE, related_name='articles',blank=True, null=True)
+
     title = models.CharField(max_length=200)
     content = models.TextField()
     category = models.CharField(max_length=50, choices=CATEGORY_CHOICES, default='impact')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     image = models.ImageField(upload_to='articles/', blank=True, null=True)
+    is_featured = models.BooleanField(default=False)
 
     def __str__(self):
         return self.title

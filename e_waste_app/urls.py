@@ -42,10 +42,11 @@ urlpatterns = [
     path('item/<int:pk>/', views.recycle_item_detail, name='recycle_item_detail'),
 
     # Article URLs
-    path('articles/', views.ArticleListView.as_view(), name='article_list'),
-    path('article/<int:pk>/', views.ArticleDetailView.as_view(), name='article_detail'),
-    path('article/add/', views.ArticleCreateView.as_view(), name='article_create'),
-    path('article/<int:pk>/edit/', views.ArticleUpdateView.as_view(), name='article_update'),
-    path('article/<int:pk>/delete/', views.ArticleDeleteView.as_view(), name='article_delete'),
+    path('articles/', views.article_list_view, name='article_list'),
+    path('articles/<int:pk>/', views.article_detail_view, name='article_detail'),
+    path('articles/create/', views.article_create_view, name='article_create'),
+    path('articles/<int:pk>/edit/', views.article_update_view, name='article_update'),
+    path('articles/<int:pk>/delete/', views.article_delete_view, name='article_delete'),
+    path('member_articles/', views.member_articles, name='member_articles'),
 
 ]

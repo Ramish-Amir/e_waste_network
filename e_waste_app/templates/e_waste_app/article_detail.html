@@ -42,13 +42,16 @@
             <p>{{ article.content }}</p>
         </div>
         <div class="button-row">
-            <a href="{% url 'e_waste_app:article_update' article.pk %}" class="btn btn-primary">Edit Article</a>
             <a href="{% url 'e_waste_app:article_list' %}" class="btn btn-secondary mr-2">Back to Articles</a>
-             <form action="{% url 'e_waste_app:article_delete' article.pk %}" method="post" style="display:inline;">
-            {% csrf_token %}
-            <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this article?');">Delete</button>
-            </form>
-
+            {% if user.is_authenticated %}
+                {% if article.author == user.member %}
+                    <a href="{% url 'e_waste_app:article_update' article.pk %}" class="btn btn-primary">Edit Article</a>
+                    <form action="{% url 'e_waste_app:article_delete' article.pk %}" method="post" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this article?');">Delete</button>
+                    </form>
+                {% endif %}
+            {% endif %}
         </div>
     </div>
 </div>
