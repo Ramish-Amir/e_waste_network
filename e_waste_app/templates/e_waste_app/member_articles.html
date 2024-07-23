@@ -1,0 +1,42 @@
+{% extends "e_waste_app/base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}My Articles{% endblock %}
+
+{% block content %}
+<section class="articles-section py-5">
+    <div class="container">
+        <div class="d-flex justify-content-between mb-4">
+            <h2>My Articles</h2>
+            {% if user.is_authenticated %}
+            <a href="{% url 'e_waste_app:article_create' %}" class="btn btn-primary">Publish New Article</a>
+            {% endif %}
+        </div>
+        <div class="row">
+            {% for article in articles %}
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-lg border-0 rounded-lg transform-hover">
+                    {% if article.image %}
+                    <img src="{{ article.image.url }}" class="card-img-top" alt="{{ article.title }}">
+                    {% else %}
+                    <img src="{% static 'images/default_article_img.jpg' %}" class="card-img-top" alt="Default image">
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title">{{ article.title }}</h5>
+                        <p class="card-text">
+                             <strong>Category:</strong> {{ article.category|upper }}
+                        </p>
+                        <a href="{% url 'e_waste_app:article_detail' article.pk %}" class="btn btn-primary">Read More</a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12">
+                <p>No articles found.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}
