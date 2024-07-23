@@ -66,6 +66,15 @@ class EditRecycleItemForm(forms.ModelForm):
         fields = ['item_type', 'description', 'condition', 'category', 'email', 'phone_number', 'address', 'city', 'province',
                   'postal_code', 'country', 'image']
 
+    def __init__(self, *args, **kwargs):
+        super(EditRecycleItemForm, self).__init__(*args, **kwargs)
+
+        # List of fields to be made required
+        required_fields = ['email', 'phone_number', 'address', 'city', 'province', 'postal_code', 'country']
+
+        for field in required_fields:
+            self.fields[field].required = True
+
 
 class HomepageSearchForm(forms.Form):
     keyword = forms.CharField(required=False, label='')
