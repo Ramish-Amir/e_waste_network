@@ -547,9 +547,11 @@ def view_my_items(request):
 @login_required
 def mark_as_unavailable(request, pk):
     item = get_object_or_404(RecycleItem, pk=pk, user=request.user)
-    item.is_active = False
-    item.save()
-    return redirect('e_waste_app:view_my_items')
+    if request.method == "POST":
+        item.is_active = False
+        item.save()
+        return redirect('e_waste_app:view_my_items')
+    return render(request, 'confirm_unavailable_item.html', {'item': item})
 
 
 @login_required
@@ -558,7 +560,7 @@ def delete_item(request, pk):
     if request.method == "POST":
         item.delete()
         return redirect(reverse_lazy('e_waste_app:view_my_items'))
-    return redirect('e_waste_app:view_my_items')
+    return render(request, 'confirm_delete_item.html', {'item': item})
 
 
 @login_required
@@ -582,10 +584,6 @@ def recycle_item_detail(request, pk):
         'condition_choices': dict(RecycleItem.CONDITION_CHOICES),
     }
     return render(request, 'e_waste_app/recycle_item_detail.html', context)
-
-
-def not_found(request, exception):
-    return render(request, 'e_waste_app/404.html', status=404)
 
 
 def article_list_view(request):
