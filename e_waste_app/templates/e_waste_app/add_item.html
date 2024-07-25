@@ -1,3 +1,29 @@
+{#{% extends 'e_waste_app/base.html' %}#}
+{#{% load crispy_forms_filters %}#}
+{#{% load crispy_forms_tags %}#}
+{##}
+{#{% block title %}Create recycling request - E-Waste Recycling Network{% endblock %}#}
+{##}
+{#{% block content %}#}
+{##}
+{#    <style>#}
+{#        .recycling-green {#}
+{#            color: #4CAF50; /* Recycling green color */#}
+{#        }#}
+{#    </style>#}
+{##}
+{#    <div class="container">#}
+{#    <h2 class="text-center recycling-green my-4 py-3">Post a new Recycling Request</h2>#}
+{#      <form method="post" enctype="multipart/form-data">#}
+{#        {% csrf_token %}#}
+{#        {{ form|crispy }}#}
+{#        <button type="submit" class="btn btn-primary">Post Request</button>#}
+{#      </form>#}
+{#    </div>#}
+{##}
+{#{% endblock %}#}
+
+
 {% extends 'e_waste_app/base.html' %}
 {% load crispy_forms_filters %}
 {% load crispy_forms_tags %}
@@ -13,12 +39,23 @@
     </style>
 
     <div class="container">
-    <h2 class="text-center recycling-green my-4 py-3">Post a new Recycling Request</h2>
-      <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ form|crispy }}
-        <button type="submit" class="btn btn-primary">Post Request</button>
-      </form>
+        <h2 class="text-center recycling-green my-4 py-3">Post a new Recycling Request</h2>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <button type="submit" class="btn btn-primary">Post Request</button>
+        </form>
+
+        <!-- Display form errors -->
+{#        {% if form.errors %}#}
+{#            <div class="alert alert-danger mt-3">#}
+{#                <ul>#}
+{#                {% for error in form.non_field_errors %}#}
+{#                    <li>{{ error }}</li>#}
+{#                {% endfor %}#}
+{#                </ul>#}
+{#            </div>#}
+{#        {% endif %}#}
     </div>
 
 {% endblock %}

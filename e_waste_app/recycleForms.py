@@ -13,7 +13,7 @@ class AddRecycleItemForm(forms.ModelForm):
         model = RecycleItem
         fields = [
             'item_type', 'description', 'condition', 'category',
-            'image', 'phone', 'address', 'city', 'province', 'postal_code', 'country'
+            'image', 'phone_number', 'email', 'address', 'city', 'province', 'postal_code', 'country'
         ]
 
     def __init__(self, *args, **kwargs):
@@ -28,7 +28,7 @@ class AddRecycleItemForm(forms.ModelForm):
             'category',
             'image',
             'user_profile_contact',
-            'phone', 'address', 'city', 'province', 'postal_code', 'country'
+            'phone_number', 'email', 'address', 'city', 'province', 'postal_code', 'country'
         ]
         self.order_fields(fields_order)
 
@@ -63,8 +63,17 @@ class SearchRecycleItemsForm(forms.Form):
 class EditRecycleItemForm(forms.ModelForm):
     class Meta:
         model = RecycleItem
-        fields = ['item_type', 'description', 'condition', 'category', 'email', 'phone', 'address', 'city', 'province',
+        fields = ['item_type', 'description', 'condition', 'category', 'email', 'phone_number', 'address', 'city', 'province',
                   'postal_code', 'country', 'image']
+
+    def __init__(self, *args, **kwargs):
+        super(EditRecycleItemForm, self).__init__(*args, **kwargs)
+
+        # List of fields to be made required
+        required_fields = ['email', 'phone_number', 'address', 'city', 'province', 'postal_code', 'country']
+
+        for field in required_fields:
+            self.fields[field].required = True
 
 
 class HomepageSearchForm(forms.Form):
