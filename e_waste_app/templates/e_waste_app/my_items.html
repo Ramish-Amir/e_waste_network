@@ -82,12 +82,13 @@
     <h3>Active</h3>
     <hr />
     {% for item in active_items %}
+        <a href="{% url 'e_waste_app:recycle_item_detail' item.pk %}" class="text-decoration-none">
         <div class="item-card">
             <div class="img_wrap">
                 {% if item.image %}
                     <img src="{{ item.image.url }}" alt="Card image cap">
                 {% else %}
-                    <img src="https://media.istockphoto.com/id/1147544807/vector/thumbnail-image-vector-graphic.jpg?s=612x612&w=0&k=20&c=rnCKVbdxqkjlcs3xH87-9gocETqpspHFXu5dIGB4wuM=" alt="Default image">
+                    <img src="{% static 'images/placeholder.jpg' %}" alt="Default image">
                 {% endif %}
             </div>
             <div class="item-card-body">
@@ -109,17 +110,18 @@
                     {% csrf_token %}
                     <button class="btn btn-primary" type="submit">Edit</button>
                 </form>
-                    <form action="{% url 'e_waste_app:mark_unavailable' item.pk %}" method="post" style="display:inline;">
+                    <form action="{% url 'e_waste_app:mark_unavailable' item.pk %}" method="get" style="display:inline;">
                     {% csrf_token %}
                     <button class="btn btn-secondary" type="submit">Mark as Unavailable</button>
                 </form>
-                <form action="{% url 'e_waste_app:delete_item' item.pk %}" method="post" style="display:inline;">
+                <form action="{% url 'e_waste_app:delete_item' item.pk %}" method="get" style="display:inline;">
                     {% csrf_token %}
                     <button class="btn btn-danger" type="submit">Delete</button>
                 </form>
                 </div>
             </div>
         </div>
+        </a>
     {% empty %}
     <div class="col-12">
         <p>No active items found.</p>
@@ -129,17 +131,18 @@
 <h3>Past Recycled</h3>
 <hr/>
     {% for item in inactive_items %}
+        <a href="{% url 'e_waste_app:recycle_item_detail' item.pk %}" class="text-decoration-none">
         <div class="item-card">
             <div class="img_wrap">
                 {% if item.image %}
                     <img src="{{ item.image.url }}" alt="Card image cap">
                 {% else %}
-                    <img src="https://media.istockphoto.com/id/1147544807/vector/thumbnail-image-vector-graphic.jpg?s=612x612&w=0&k=20&c=rnCKVbdxqkjlcs3xH87-9gocETqpspHFXu5dIGB4wuM=" alt="Default image">
+                    <img src="{% static 'images/placeholder.jpg' %}" alt="Default image">
                 {% endif %}
             </div>
             <div class="item-card-body">
-                <h5 class="card-title">{{ item.item_type }}</h5>
-                <p class="card-text truncate">{{ item.description }}</p>
+                <h5 class="card-title text-dark">{{ item.item_type }}</h5>
+                <p class="card-text truncate text-muted">{{ item.description }}</p>
                 <span class="badge badge-primary">{{ category_choices|get_item:item.category }}</span>
                 <span class="badge badge-secondary">{{ condition_choices|get_item:item.condition }}</span>
                 <div class="badge-condition">
@@ -151,7 +154,7 @@
                     </div>
                 </div>
                 <div class="card-buttons-wrap">
-                    <form action="{% url 'e_waste_app:delete_item' item.pk %}" method="post" style="display:inline;">
+                    <form action="{% url 'e_waste_app:delete_item' item.pk %}" method="get" style="display:inline;">
                         {% csrf_token %}
                         <button class="btn btn-danger" type="submit">Delete</button>
                     </form>
@@ -159,6 +162,7 @@
 
             </div>
         </div>
+        </a>
 
     {% empty %}
         <div class="col-12">
