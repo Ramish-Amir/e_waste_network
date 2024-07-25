@@ -26,6 +26,10 @@ class RegisterForm(forms.ModelForm):
         model = Member
         fields = ['username', 'email', 'password']
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['email'].required = True  # Make email required
+
     def clean(self):
         cleaned_data = super().clean()
         password = cleaned_data.get("password")

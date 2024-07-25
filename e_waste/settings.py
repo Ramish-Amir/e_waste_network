@@ -13,6 +13,9 @@ import os
 from pathlib import Path
 
 from django.core.checks import templates
+import certifi
+
+os.environ['SSL_CERT_FILE'] = certifi.where()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -27,7 +30,7 @@ SECRET_KEY = 'django-insecure-z3yrs^ei#^!m)0f5sqki0))4lm%gs49ya_06#6hs-*9u&o7tg3
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 #EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
@@ -74,13 +77,17 @@ MIDDLEWARE = [
     'e_waste_app.middleware.TrackUserLoginMiddleware'
 ]
 
+# settings.py
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'e_waste_app/static')]
+
 ROOT_URLCONF = 'e_waste.urls'
 LOGIN_URL = '/login'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         #'DIRS': [BASE_DIR / 'templates']
-        'DIRS': [os.path.join(BASE_DIR, 'templates')]
+        'DIRS': [os.path.join(BASE_DIR, 'e_waste_app/templates/e_waste_app')]
         ,
         'APP_DIRS': True,
         'OPTIONS': {
@@ -106,7 +113,6 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
@@ -142,9 +148,6 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
-# settings.py
-STATIC_URL = '/static/'
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'e_waste_app/static')]
 
 # Media files (Uploaded files)
 MEDIA_URL = '/media/'

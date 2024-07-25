@@ -64,7 +64,7 @@ class RecycleItem(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     is_active = models.BooleanField(default=True)
     email = models.EmailField(blank=True, null=True)
-    phone = models.CharField(max_length=15, blank=True, null=True)
+    phone_number = models.CharField(max_length=15, blank=True, null=True)
     address = models.CharField(max_length=300, blank=True, null=True)
     city = models.CharField(max_length=50, blank=True, null=True)
     province = models.CharField(max_length=50, blank=True, null=True)
