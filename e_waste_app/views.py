@@ -217,7 +217,7 @@ def password_reset(request):
         form = PasswordResetForm(request.POST)
         if form.is_valid():
             email = form.cleaned_data.get('email')
-            user = User.objects.filter(email=email).last() # Since multiple users with same email is acceptable
+            user = User.objects.filter(email=email).last()  # Since multiple users with same email is acceptable
             # therefore latest created account will be considered for now
             if user:
                 subject = "Password Reset Request"
@@ -246,10 +246,10 @@ def password_reset_done(request):
 class HomeView(TemplateView):
     template_name = 'e_waste_app/home.html'
 
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['form'] = HomepageSearchForm()
+        context['featured_articles'] = Article.objects.filter(is_featured=True)
         return context
 
 
@@ -277,6 +277,7 @@ class ContactUsView(FormView):
         form.save()
         messages.success(self.request, 'Your message has been sent successfully!')
         return redirect('contactus')
+
 
 # def search_results(request):
 #     query = request.GET.get('name')
@@ -545,6 +546,8 @@ def recycle_item_detail(request, pk):
 
 def not_found(request, exception):
     return render(request, 'e_waste_app/404.html', status=404)
+
+
 def article_list_view(request):
     articles = Article.objects.all()
     return render(request, 'e_waste_app/articles_list.html', {'articles': articles})

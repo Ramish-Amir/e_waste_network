@@ -107,39 +107,26 @@
 <section class="articles-section py-5">
     <div class="container">
         <div class="row">
-            <div class="col-md-4 mb-4">
-                <div class="card shadow-lg border-0 rounded-lg transform-hover">
-                    <img src="{% static 'images/article1_img.jpg' %}" class="card-img-top" alt="The Importance of E-Waste Recycling">
-                    <div class="card-body">
-                        <h5 class="card-title">The Importance of E-Waste Recycling</h5>
-                        <p class="card-text">Discover why recycling e-waste is crucial for reducing environmental pollution and conserving valuable resources.</p>
-                        <a href="article1/" class="btn btn-primary">Read More</a>
+            {% for article in featured_articles %}
+                <div class="col-md-4 mb-4">
+                    <div class="card shadow-lg border-0 rounded-lg transform-hover">
+                        {% if article.image %}
+                            <img src="{{ article.image.url }}" class="card-img-top" alt="{{ article.title }}">
+                        {% else %}
+                            <img src="{% static 'images/placeholder.jpg' %}" class="card-img-top" alt="{{ article.title }}">
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title">{{ article.title }}</h5>
+                            <p class="card-text">{{ article.content|truncatewords:20 }}</p>
+                            <a href="{% url 'e_waste_app:article_detail' article.pk %}" class="btn btn-primary">Read More</a>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-md-4 mb-4">
-                <div class="card shadow-lg border-0 rounded-lg transform-hover">
-                    <img src="{% static 'images/article2_img.jpg' %}" class="card-img-top" alt="How to Dispose of E-Waste Responsibly">
-                    <div class="card-body">
-                        <h5 class="card-title">How to Dispose of E-Waste Responsibly</h5>
-                        <p class="card-text">Learn effective methods for disposing of electronic waste in an eco-friendly way and the benefits of responsible disposal.</p>
-                        <a href="article2/" class="btn btn-primary">Read More</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4 mb-4">
-                <div class="card shadow-lg border-0 rounded-lg transform-hover">
-                    <img src="{% static 'images/article3_img.jpeg' %}" class="card-img-top" alt="E-Waste Recycling Programs Near You">
-                    <div class="card-body">
-                        <h5 class="card-title">E-Waste Recycling Programs Near You</h5>
-                        <p class="card-text">Find local e-waste recycling programs and learn how you can get involved in making a positive impact.</p>
-                        <a href="article3/" class="btn btn-primary">Read More</a>
-                    </div>
-                </div>
-            </div>
+            {% endfor %}
         </div>
     </div>
 </section>
+
 
 <section class="feedback-section text-center py-5">
     <div class="container">
