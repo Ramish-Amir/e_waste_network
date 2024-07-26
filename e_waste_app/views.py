@@ -180,26 +180,13 @@ def aboutus(request):
 
 
 def article1(request):
-    #actions = request.session
-    if 'actions_taken_today' in request.session:
-        request.session['actions_taken_today'] += 1
-    else:
-        request.session['actions_taken_today'] = 1
     return render(request, 'e_waste_app/article1.html')
 
 
 def article2(request):
-    if 'actions_taken_today' in request.session:
-        request.session['actions_taken_today'] += 1
-    else:
-        request.session['actions_taken_today'] = 1
     return render(request, 'e_waste_app/article2.html')
 
 def article3(request):
-    if 'actions_taken_today' in request.session:
-        request.session['actions_taken_today'] += 1
-    else:
-        request.session['actions_taken_today'] = 1
     return render(request, 'e_waste_app/article3.html')
 
 
