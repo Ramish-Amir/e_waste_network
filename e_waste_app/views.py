@@ -454,39 +454,33 @@ def add_recycle_item(request):
                     print("Missing fields: ", missing_form_fields)
                     form.add_error(None, "Please provide the missing contact information in the form.")
 
-            # if not form.errors:
-            #     # Save the instance to the database
-            #     recycling_request.save()
-            #     return redirect('e_waste_app:view_recycle_items')
+            if not form.errors:
+                # Save the instance to the database
+                recycling_request.save()
 
-            recycling_request.save()
+                #UserHistory
+                # Increment action taken
+                if 'actions_taken_today' in request.session:
+                    request.session['actions_taken_today'] += 1
+                else:
+                    request.session['actions_taken_today'] = 1
 
-            # Save the instance to the database
-            recycling_request.save()
-            #UserHistory
-            # Increment action taken
-            if 'actions_taken_today' in request.session:
-                request.session['actions_taken_today'] += 1
-            else:
-                request.session['actions_taken_today'] = 1
+                # Update the session with the recent post
+                if 'recent_posts' not in request.session:
+                    request.session['recent_posts'] = []
 
-            # Update the session with the recent post
-            if 'recent_posts' not in request.session:
-                request.session['recent_posts'] = []
+                recent_posts = request.session['recent_posts']
+                recent_posts.append({
+                    'id': recycling_request.id,
+                    'item_type': recycling_request.item_type,
+                    'description': recycling_request.description,
+                    'created_at': recycling_request.created_at.strftime('%Y-%m-%d %H:%M:%S')  # Store date in ISO format
+                })
+                # Keep only the 5 most recent posts
+                request.session['recent_posts'] = recent_posts[-5:]
+                request.session.modified = True
 
-            recent_posts = request.session['recent_posts']
-            recent_posts.append({
-                'id': recycling_request.id,
-                'item_type': recycling_request.item_type,
-                'description': recycling_request.description,
-                'created_at': recycling_request.created_at.strftime('%Y-%m-%d %H:%M:%S')  # Store date in ISO format
-            })
-            # Keep only the 5 most recent posts
-            request.session['recent_posts'] = recent_posts[-5:]
-            request.session.modified = True
-
-
-            return redirect('e_waste_app:view_recycle_items')
+                return redirect('e_waste_app:view_recycle_items')
     else:
         form = AddRecycleItemForm()
 
