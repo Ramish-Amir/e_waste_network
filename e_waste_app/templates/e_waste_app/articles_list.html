@@ -20,7 +20,7 @@
                     {% if article.image %}
                     <img src="{{ article.image.url }}" class="card-img-top" alt="{{ article.title }}">
                     {% else %}
-                    <img src="{% static 'images/default_article_img.jpg' %}" class="card-img-top" alt="Default image">
+                    <img src="{% static 'images/placeholder.jpg' %}" class="card-img-top" alt="Default image">
                     {% endif %}
                     <div class="card-body">
                         <h5 class="card-title">{{ article.title }}</h5>
