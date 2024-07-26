@@ -1,0 +1,18 @@
+{% extends "e_waste_app/base.html" %}
+{% load static %}
+{% block title %}Confirm Delete{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="card">
+        <div class="card-body text-center">
+            <h5 class="card-title">Are you sure to delete {{ item.item_type }}?</h5>
+            <form method="POST">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">Confirm</button>
+                <a href="{% url 'e_waste_app:view_my_items' %}" class="btn btn-secondary">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

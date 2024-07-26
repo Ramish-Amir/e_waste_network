@@ -1,0 +1,17 @@
+{% extends "e_waste_app/base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}Confirm Deletion{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Confirm Deletion</h1>
+    <p>Are you sure you want to delete the article titled "{{ article.title }}"?</p>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Delete</button>
+        <a href="{% url 'e_waste_app:article_detail' article.pk %}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}

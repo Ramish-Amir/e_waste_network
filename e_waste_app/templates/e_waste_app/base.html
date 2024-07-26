@@ -1,0 +1,144 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}E-Waste Recycling Network{% endblock %}</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+</head>
+<style>
+    .hero-section {
+        background-image: url("{% static 'images/hero_image2.jpg' %}"); /* Update with your image path */
+        background-size: cover;
+        background-position: center;
+        position: relative;
+        min-height: 60vh;
+        color: white;
+    }
+
+    .overlay {
+        background-color: rgba(0, 0, 0, 0.6); /* Semi-transparent black overlay */
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+    }
+
+    .hero-section h1 {
+        font-size: 3rem;
+        margin-bottom: 20px;
+    }
+
+    .hero-section p {
+        font-size: 1.6rem;
+        margin-bottom: 20px;
+    }
+
+    .content-section {
+        padding: 60px 0;
+    }
+
+    .content-section h2 {
+        font-size: 2rem;
+        margin-bottom: 20px;
+    }
+
+    .content-section p {
+        font-size: 1rem;
+        margin-bottom: 20px;
+    }
+
+    .nav-logo {
+        width: 250px;
+    }
+
+    .dropdown {
+        position: relative;
+    }
+
+    .dropdown-content {
+        display: none;
+        background-color: whitesmoke;
+        z-index: 10;
+        position: absolute;
+        top: 40px;
+        right: 0;
+        border-radius: 10px;
+        border: 1px solid rgba(0,0,0,.125);
+        overflow: hidden;
+    }
+
+    .dropdown:hover .dropdown-content {
+        display: block;
+    }
+</style>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="{% url 'e_waste_app:home' %}">
+            <img class="nav-logo" src="{% static 'images/logo-no-background.svg' %}" alt="ewaste logo" />
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'e_waste_app:home' %}">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'e_waste_app:add_recycle_item' %}">Recycle Item</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'e_waste_app:view_recycle_items' %}">Available Items</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'e_waste_app:article_list' %}">Articles</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'e_waste_app:aboutus' %}">About Us</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'e_waste_app:contactus' %}">Contact Us</a>
+                </li>
+            </ul>
+            <ul class="navbar-nav ml-auto">
+                {% if user.is_authenticated %}
+                    <li class="nav-item dropdown">
+                        <a>
+                            <img src="{% static 'images/profile_avatar.jpeg' %}" alt="user" class="rounded-circle border" style="width: 40px; height: 40px;">
+                        </a>
+                        <div class="dropdown-content">
+                            <a class="dropdown-item" href="{% url 'e_waste_app:profile' %}">Profile</a>
+                            <a class="dropdown-item" href="{% url 'e_waste_app:view_my_items' %}">My Items</a>
+                            <a class="dropdown-item" href="{% url 'e_waste_app:member_articles' %}">My Articles</a>
+                            <a class="dropdown-item" href="{% url 'e_waste_app:dashboard' %}">Dashboard</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item text-danger" href="{% url 'e_waste_app:logout' %}">Logout</a>
+                        </div>
+                    </li>
+                {% else %}
+                    <a class="btn btn-outline-primary my-2 my-sm-0" href="{% url 'e_waste_app:login' %}">Login</a>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Content -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    {% include 'e_waste_app/footer.html' %}
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
