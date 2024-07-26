@@ -12,6 +12,11 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 import os
 from pathlib import Path
 
+from django.core.checks import templates
+import certifi
+
+os.environ['SSL_CERT_FILE'] = certifi.where()
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -25,10 +30,19 @@ SECRET_KEY = 'django-insecure-z3yrs^ei#^!m)0f5sqki0))4lm%gs49ya_06#6hs-*9u&o7tg3
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
-#MAIL_BACKEND = 'django.core.mail.backends.emailbased.EmailBackend'
-EMAIL_FILE_PATH = r'C:\Users\anilk\OneDrive\Desktop\internet applicaction distributed systems\project_new\e_waste_network\e_waste_app\templates\email'
+ALLOWED_HOSTS = ['*']
+#EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'ewastenetwork@gmail.com'
+#EMAIL_HOST_PASSWORD = 'atgm ktae lxbx zxzn'
+EMAIL_HOST_PASSWORD = 'lrxk vzlg njlx hjjv'
+DEFAULT_FROM_EMAIL = 'ewastenetwork@gmail.com'
+
+# EMAIL_FILE_PATH = r'C:\Users\anilk\OneDrive\Desktop\internet applicaction distributed systems\project_new\e_waste_network\e_waste_app\templates\email'
+# EMAIL_FILE_PATH = r'C:\Users\anilk\OneDrive\Desktop\internet applicaction distributed systems\project_new\e_waste_network\e_waste_app\templates\email'
 
 '''if not os.path.exists(EMAIL_FILE_PATH):
     os.makedirs(EMAIL_FILE_PATH)
@@ -58,17 +72,22 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    #userhistory
+
     'e_waste_app.middleware.TrackVisitDurationMiddleware',
     'e_waste_app.middleware.TrackUserLoginMiddleware'
 ]
+
+# settings.py
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'e_waste_app/static')]
 
 ROOT_URLCONF = 'e_waste.urls'
 LOGIN_URL = '/login'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates']
+        #'DIRS': [BASE_DIR / 'templates']
+        'DIRS': [os.path.join(BASE_DIR, 'e_waste_app/templates/e_waste_app')]
         ,
         'APP_DIRS': True,
         'OPTIONS': {
@@ -94,7 +113,6 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
@@ -130,7 +148,6 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
-STATIC_URL = '/static/'
 
 # Media files (Uploaded files)
 MEDIA_URL = '/media/'

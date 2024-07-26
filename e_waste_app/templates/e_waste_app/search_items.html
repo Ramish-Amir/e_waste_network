@@ -1,4 +1,5 @@
-{% extends "e_waste_app/static/base.html" %}
+{% extends 'e_waste_app/base.html' %}
+{% load static %}
 {% load custom_filters %}
 {% load crispy_forms_filters %}
 {% load crispy_forms_tags %}
@@ -13,6 +14,7 @@
         -webkit-line-clamp: 3;
         overflow: hidden;
         text-overflow: ellipsis;
+        color: grey;
     }
 
     .card-img-top {
@@ -26,6 +28,10 @@
         height: 100%;
         display: flex;
         flex-direction: column;
+    }
+
+    .card-title {
+        color: black;
     }
 
     .card:hover {
@@ -74,29 +80,32 @@
     <div class="row">
         {% for item in results %}
             <div class="col-md-4 my-4">
-                <div class="card">
-                    {% if item.image %}
-                        <img class="card-img-top" src="{{ item.image.url }}" alt="Card image cap">
-                    {% else %}
-                        <img class="card-img-top" src="https://media.istockphoto.com/id/1147544807/vector/thumbnail-image-vector-graphic.jpg?s=612x612&w=0&k=20&c=rnCKVbdxqkjlcs3xH87-9gocETqpspHFXu5dIGB4wuM=" alt="Default image">
-                    {% endif %}
-                    <div class="card-body">
-                        <h5 class="card-title">{{ item.item_type }}</h5>
-                        <p class="card-text truncate-multiline">{{ item.description }}</p>
-                        <span class="badge badge-primary">{{ category_choices|get_item:item.category }}</span>
-                        <span class="badge badge-secondary">{{ condition_choices|get_item:item.condition }}</span>
-                    </div>
-                    <div class="card-footer">
-                        <div class="badge-condition">
-                            <div class="icon-text">
-                                <i class="fas fa-clock text-muted"></i><small class="text-muted">{{  item.created_at }}</small>
-                            </div>
-                            <div class="icon-text">
-                                <i class="fas fa-map-marker-alt text-muted"></i><small class="text-muted">{{ item.address }}, {{ item.city }} {{ item.postal_code }}</small>
+                <a href="{% url 'e_waste_app:recycle_item_detail' item.pk %}" class="text-decoration-none">
+                    <div class="card">
+                        {% if item.image %}
+                            <img class="card-img-top" src="{{ item.image.url }}" alt="Card image cap">
+                        {% else %}
+                            <img class="card-img-top" src="{% static 'images/placeholder.jpg' %}" alt="Default image">
+                        {% endif %}
+
+                        <div class="card-body">
+                            <h5 class="card-title">{{ item.item_type }}</h5>
+                            <p class="card-text truncate-multiline">{{ item.description }}</p>
+                            <span class="badge badge-primary">{{ category_choices|get_item:item.category }}</span>
+                            <span class="badge badge-secondary">{{ condition_choices|get_item:item.condition }}</span>
+                        </div>
+                        <div class="card-footer">
+                            <div class="badge-condition">
+                                <div class="icon-text">
+                                    <i class="fas fa-clock text-muted"></i><small class="text-muted">{{ item.created_at }}</small>
+                                </div>
+                                <div class="icon-text">
+                                    <i class="fas fa-map-marker-alt text-muted"></i><small class="text-muted">{{ item.address }}, {{ item.city }} {{ item.postal_code }}</small>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                </a>
             </div>
         {% empty %}
             <div class="col-12">

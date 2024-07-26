@@ -1,0 +1,23 @@
+{% extends "e_waste_app/base.html" %}
+{% load crispy_forms_filters %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}Add or Edit Article{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2 class="my-4 text-center">{% if form.instance.pk %}Edit{% else %}Add{% endif %} Article</h2>
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary">
+                {% if form.instance.pk %}Update{% else %}Create{% endif %}
+            </button>
+            <a href="{% url 'e_waste_app:article_list' %}" class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

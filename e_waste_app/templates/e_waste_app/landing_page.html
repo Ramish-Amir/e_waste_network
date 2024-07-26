@@ -1,4 +1,5 @@
-{% extends 'e_waste_app/base.html' %}
+{% extends "e_waste_app/base.html" %}
+
 {% block content %}
 <div class="container mt-4">
     <div class="row justify-content-start">
@@ -16,8 +17,10 @@
                     {% endif %}
                 {% endfor %}
             {% endif %}
-            <h1 class="mb-4">Password Reset Sent</h1>
-            <p class="lead mb-4">We have emailed you the instructions for setting your password. You should receive the message shortly.</p>
+
+            <h1 class="mb-4">Welcome to E-Waste Network!</h1>
+            <p class="lead mb-4">Thank you for registering. Please check your email to activate your account.</p>
+            <p class="mb-4">If you don't see the email in your inbox, please check your spam or junk folder.</p>
             <a href="{% url 'e_waste_app:login' %}" class="btn btn-primary btn-lg">Go to Login</a>
         </div>
     </div>

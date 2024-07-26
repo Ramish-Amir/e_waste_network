@@ -1,16 +1,26 @@
-{% extends 'e_waste_app/static/base.html' %}
+{% extends 'e_waste_app/base.html' %}
 {% load crispy_forms_filters %}
 {% block content %}
-    <div class="container content-section">
+    <div class="container mt-4">
+    <div class="col-md-8">
     <h2>Profile</h2>
     {% if messages %}
-        <div class="alert alert-success">
-            {% for message in messages %}
-                {{ message }}
-            {% endfor %}
-        </div>
-    {% endif %}
-    <form method="post" novalidate>
+                {% for message in messages %}
+                    {% if message.tags == 'error' %}
+                        {% if not forloop.first %}
+                            <hr>
+                        {% endif %}
+                        <div class="alert alert-danger">{{ message }}</div>
+                    {% elif message.tags == 'success' %}
+                        {% if not forloop.first %}
+                            <hr>
+                        {% endif %}
+                        <div class="alert alert-success">{{ message }}</div>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+
+    <form method="post">
         {% csrf_token %}
         <div class="form-group">
             <label for="id_name"></label>
@@ -21,16 +31,36 @@
             {{ form.email|as_crispy_field }}
         </div>
         <div class="form-group">
-            <label for="id_password"></label>
+            <label for="id_phone"></label>
+            {{ form.phone_number|as_crispy_field }}
+        </div>
+        <div class="form-group">
+            <label for="id_address"></label>
             {{ form.address|as_crispy_field }}
         </div>
         <div class="form-group">
-            <label for="id_confirm_password"></label>
+            <label for="id_city"></label>
+            {{ form.city|as_crispy_field }}
+        </div>
+        <div class="form-group">
+            <label for="id_province"></label>
+            {{ form.province|as_crispy_field }}
+        </div>
+        <div class="form-group">
+            <label for="id_postal_code"></label>
             {{ form.postal_code|as_crispy_field }}
         </div>
-
+        <div class="form-group">
+            <label for="id_country"></label>
+            {{ form.country|as_crispy_field }}
+        </div>
+        <div class="form-group">
+            <label for="id_user_type"></label>
+            {{ form.user_type|as_crispy_field }}
+        </div>
         <button type="submit" class="btn btn-primary">Save Changes</button>
     </form>
+    </div>
 </div>
 
 {% endblock %}
