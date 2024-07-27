@@ -6,9 +6,6 @@ from django.urls import path
 from e_waste_app.views import (
     HomeView,
     AboutUsView,
-    Article1View,
-    Article2View,
-    Article3View,
     ContactUsView,
 )
 
@@ -53,4 +50,5 @@ urlpatterns = [
     path('articles/<int:pk>/delete/', views.article_delete_view, name='article_delete'),
     path('member_articles/', views.member_articles, name='member_articles'),
 
+    path('dashboard/', views.dashboard, name='dashboard'),
 ]
