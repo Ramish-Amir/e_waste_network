@@ -31,9 +31,6 @@ urlpatterns = [
     path(r'reset/done/', CustomPasswordResetCompleteView.as_view(),
          name='password_reset_complete'),
     path('aboutus/', AboutUsView.as_view(), name='aboutus'),
-    path('article1/', Article1View.as_view(), name='article1'),
-    path('article2/', Article2View.as_view(), name='article2'),
-    path('article3/', Article3View.as_view(), name='article3'),
     path('contact/', ContactUsView.as_view(), name='contactus'),
     path('profile/', views.profile, name='profile'),
 
@@ -45,6 +42,7 @@ urlpatterns = [
     path('delete_item/<int:pk>/', views.delete_item, name='delete_item'),
     path('edit_item/<int:pk>/', views.edit_item, name='edit_item'),
     path('item/<int:pk>/', views.recycle_item_detail, name='recycle_item_detail'),
+
     path('feedback/', views.feedback_view, name='feedback'),
 
     # Article URLs
