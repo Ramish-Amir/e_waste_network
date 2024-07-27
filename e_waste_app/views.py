@@ -257,18 +257,6 @@ class AboutUsView(TemplateView):
     template_name = 'e_waste_app/aboutus.html'
 
 
-class Article1View(TemplateView):
-    template_name = 'e_waste_app/article1.html'
-
-
-class Article2View(TemplateView):
-    template_name = 'e_waste_app/article2.html'
-
-
-class Article3View(TemplateView):
-    template_name = 'e_waste_app/article3.html'
-
-
 class ContactUsView(FormView):
     template_name = 'e_waste_app/contact_us.html'
     form_class = ContactForm
