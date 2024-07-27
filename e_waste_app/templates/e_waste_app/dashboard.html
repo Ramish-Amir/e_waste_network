@@ -1,0 +1,164 @@
+{% extends 'e_waste_app/base.html' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+    <h1 class="mb-4 text-center"></h1>
+
+    <!-- General Dashboard
+    <div class="mb-5">
+        <h2 class="mb-4 text-center">General Dashboard</h2>
+        <div class="row mb-4">
+            <div class="col-lg-6 mb-4">
+
+                <div class="card border-primary shadow-sm">
+                    <div class="card-header bg-primary text-white d-flex align-items-center">
+                        <i class="fas fa-users fa-2x mr-3"></i>
+                        <h5 class="card-title mb-0">Total Users Registered This Week</h5>
+                    </div>
+                    <div class="card-body text-center">
+                        <h2 class="display-4 font-weight-bold">{{ total_users_this_week }}</h2>
+                        <p class="text-muted">New users registered this week</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6 mb-4">
+
+                <div class="card border-warning shadow-sm">
+                    <div class="card-header bg-warning text-dark d-flex align-items-center">
+                        <i class="fas fa-calendar-times fa-2x mr-3"></i>
+                        <h5 class="card-title mb-0">Total Ads Expired</h5>
+                    </div>
+                    <div class="card-body text-center">
+                        <h2 class="display-4 font-weight-bold">{{ total_ads_expired }}</h2>
+                        <p class="text-muted">Expired ads</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card border-success shadow-sm">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="card-title mb-0">Total Ads by Category</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            {% for category in total_ads_by_category %}
+                                <div class="col-md-4 mb-3">
+                                    <div class="card border-light shadow-sm">
+                                        <div class="card-body text-center">
+                                            <h4 class="card-title">{{ category.category }}</h4>
+                                            <h2 class="display-4 font-weight-bold">{{ category.total }}</h2>
+                                            <p class="text-muted">Total ads in this category</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+-->
+    <!-- Personal Dashboard -->
+    <div>
+        <h2 class="mb-4 text-center">{{ user }} History</h2>
+        <div class="row mb-4">
+            <div class="col-lg-6 mb-4">
+                <!-- Average Visit Duration Today -->
+                <div class="card border-info shadow-sm">
+                    <div class="card-header bg-info text-white d-flex align-items-center">
+                        <i class="fas fa-clock fa-2x mr-3"></i>
+                        <h5 class="card-title mb-0">Total Visit Duration</h5>
+                    </div>
+                    <div class="card-body text-center">
+                        <h2 class="display-4 font-weight-bold">{{ total_visit_duration_today }} </h2>
+                        <p class="text-muted">Total time spent on the site with this Session</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6 mb-4">
+                <!-- Number of Actions Taken Today -->
+                <div class="card border-secondary shadow-sm">
+                    <div class="card-header bg-secondary text-white d-flex align-items-center">
+                        <i class="fas fa-tachometer-alt fa-2x mr-3"></i>
+                        <h5 class="card-title mb-0">Number of Items Recycled</h5>
+                    </div>
+                    <div class="card-body text-center">
+                        <h2 class="display-4 font-weight-bold">{{ actions_taken_today }}</h2>
+                        <p class="text-muted">Items Recycled in this Session</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-4">
+            <div class="col-lg-6 mb-4">
+                <!-- Number of Visits -->
+                <div class="card border-primary shadow-sm">
+                    <div class="card-header bg-primary text-white d-flex align-items-center">
+                        <i class="fas fa-traffic-light fa-2x mr-3"></i>
+                        <h5 class="card-title mb-0">Number of Page Visits</h5>
+                    </div>
+                    <div class="card-body text-center">
+                        <h2 class="display-4 font-weight-bold">{{ number_of_visits_today }}</h2>
+                        <p class="text-muted">Total Page visits of this site</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6 mb-4">
+                <!-- Recently Posted Requests -->
+                <div class="container mt-4">
+    <div class="card border-dark shadow-sm">
+        <div class="card-header bg-dark text-white d-flex align-items-center">
+            <i class="fas fa-list-ul fa-2x mr-3"></i>
+            <h5 class="card-title mb-0">Recently Posted Requests</h5>
+        </div>
+        <div class="card-body">
+            {% if recent_posted_requests %}
+                <div class="list-group">
+                    {% for ad in recent_posted_requests %}
+                        <div class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="mb-1">{{ ad.item_type }} - {{ ad.id }}</h6>
+                                <small class="text-muted">Description: {{ ad.description}}</small><p></p>
+                                <small class="text-muted">Posted on: {{ ad.created_at}}</small>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="text-center text-muted">No requests posted recently.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+            </div>
+        </div>
+
+        <div class="row mb-4">
+            <div class="col-lg-6 mb-4">
+                <!-- Last Login Time -->
+                <div class="card border-info shadow-sm">
+                    <div class="card-header bg-info text-white d-flex align-items-center">
+                        <i class="fas fa-sign-in-alt fa-2x mr-3"></i>
+                        <h5 class="card-title mb-0">Last Login Time</h5>
+                    </div>
+                    <div class="card-body text-center">
+                        <h2 class="display-4 font-weight-bold">{{ last_login_time }}</h2>
+                        <p class="text-muted">When you last logged in</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

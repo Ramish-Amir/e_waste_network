@@ -27,6 +27,18 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.utils.encoding import force_str
 from .recycleForms import AddRecycleItemForm, SearchRecycleItemsForm, EditRecycleItemForm, HomepageSearchForm
 
+#userhistory
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
+from django.utils import timezone
+from django.db.models import Count, Avg
+from .models import RecycleItem, UserVisit
+from datetime import date
+import datetime
+
+
 
 # Create your views here.
 
@@ -434,6 +446,29 @@ def add_recycle_item(request):
             if not form.errors:
                 # Save the instance to the database
                 recycling_request.save()
+
+                #UserHistory
+                # Increment action taken
+                if 'actions_taken_today' in request.session:
+                    request.session['actions_taken_today'] += 1
+                else:
+                    request.session['actions_taken_today'] = 1
+
+                # Update the session with the recent post
+                if 'recent_posts' not in request.session:
+                    request.session['recent_posts'] = []
+
+                recent_posts = request.session['recent_posts']
+                recent_posts.append({
+                    'id': recycling_request.id,
+                    'item_type': recycling_request.item_type,
+                    'description': recycling_request.description,
+                    'created_at': recycling_request.created_at.strftime('%Y-%m-%d %H:%M:%S')  # Store date in ISO format
+                })
+                # Keep only the 5 most recent posts
+                request.session['recent_posts'] = recent_posts[-5:]
+                request.session.modified = True
+
                 return redirect('e_waste_app:view_recycle_items')
     else:
         form = AddRecycleItemForm()
@@ -495,9 +530,11 @@ def view_my_items(request):
 @login_required
 def mark_as_unavailable(request, pk):
     item = get_object_or_404(RecycleItem, pk=pk, user=request.user)
-    item.is_active = False
-    item.save()
-    return redirect('e_waste_app:view_my_items')
+    if request.method == "POST":
+        item.is_active = False
+        item.save()
+        return redirect('e_waste_app:view_my_items')
+    return render(request, 'confirm_unavailable_item.html', {'item': item})
 
 
 @login_required
@@ -506,7 +543,7 @@ def delete_item(request, pk):
     if request.method == "POST":
         item.delete()
         return redirect(reverse_lazy('e_waste_app:view_my_items'))
-    return redirect('e_waste_app:view_my_items')
+    return render(request, 'confirm_delete_item.html', {'item': item})
 
 
 @login_required
@@ -602,3 +639,45 @@ def article_delete_view(request, pk):
         return redirect(reverse_lazy('e_waste_app:article_list'))
 
     return render(request, 'e_waste_app/article_confirm_delete.html', {'article': article})
+
+
+#Userhistory
+@login_required
+def dashboard(request):
+    #Last Login
+    user = request.user
+    # Track last login time
+    if not user.last_login:
+        user.last_login = timezone.now()
+        user.save()
+    last_login_time = user.last_login
+    # Store last visit time in session
+    if 'last_visit' not in request.session:
+        request.session['last_visit'] = timezone.now().strftime('%Y-%m-%d %H:%M:%S')
+
+    #Session Posts
+    recent_posts = request.session.get('recent_posts', [])
+
+    # Update last visit time
+    current_time = timezone.now()
+    request.session['last_visit'] = current_time.strftime('%Y-%m-%d %H:%M:%S')
+
+    # Number of visits today
+    today = date.today().strftime("%Y-%m-%d")
+    session_key = f"visits_{today}"
+    visits_today = request.session.get(session_key, 0)
+
+
+    total_visit_duration_today = request.session.get('total_visit_duration_today', 0)
+    hours, remainder = divmod(total_visit_duration_today, 3600)
+    minutes, seconds = divmod(remainder, 60)
+    actions_taken_today = request.session.get('actions_taken_today', 0)
+    #last_login_time = request.session.get('last_login_time', 'N/A')
+    context = {
+        'total_visit_duration_today': f"{int(hours)}h {int(minutes)}m {int(seconds)}s",
+        'actions_taken_today': actions_taken_today,
+        'last_login_time': last_login_time,
+        'recent_posted_requests': recent_posts,
+        'number_of_visits_today': visits_today,
+    }
+    return render(request, 'e_waste_app/dashboard.html', context)

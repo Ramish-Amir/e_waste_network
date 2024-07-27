@@ -5,6 +5,8 @@ from django.db import models
 from django.contrib.auth.models import User
 
 from e_waste import settings
+from django.utils import timezone
+# Create your models here.
 
 
 class Member(User):
@@ -106,3 +108,11 @@ class Article(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class UserVisit(models.Model):
+    user = models.ForeignKey(Member, on_delete=models.CASCADE)
+    visit_time = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return f'Visit by {self.user} at {self.visit_time}'
