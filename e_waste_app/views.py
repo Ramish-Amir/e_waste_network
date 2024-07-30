@@ -411,10 +411,7 @@ def add_recycle_item(request):
                 if missing_fields:
                     form.add_error(None, "Your profile is missing contact information. "
                                          "Either complete your profile first or enter details manually.")
-                else:
-                    # Populate recycling_request with current_member's data
-                    for field, _ in fields:
-                        setattr(recycling_request, field, getattr(current_member, field))
+                    
             else:
                 # Check if the form is missing required contact fields
                 missing_form_fields = [label for field, label in fields if not form.cleaned_data.get(field)]
