@@ -6,7 +6,51 @@
     <h2 class="my-4 text-center">Edit Item</h2>
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        {{ form|crispy }}
+
+        {{ form.non_field_errors }}
+
+        <div class="form-group">
+            {{ form.item_type|as_crispy_field }}
+        </div>
+        <div class="form-group">
+            {{ form.description|as_crispy_field }}
+        </div>
+        <div class="form-group">
+            {{ form.condition|as_crispy_field }}
+        </div>
+        <div class="form-group">
+            {{ form.category|as_crispy_field }}
+        </div>
+
+        {% if form.instance.use_profile_contact %}
+            <p>Uses contact details from profile. Please update profile to change these details.</p>
+        {% endif %}
+
+        <div class="form-group">
+            {{ form.email|as_crispy_field }}
+        </div>
+        <div class="form-group">
+            {{ form.phone_number|as_crispy_field }}
+        </div>
+        <div class="form-group">
+            {{ form.address|as_crispy_field }}
+        </div>
+        <div class="form-group">
+            {{ form.city|as_crispy_field }}
+        </div>
+        <div class="form-group">
+            {{ form.province|as_crispy_field }}
+        </div>
+        <div class="form-group">
+            {{ form.postal_code|as_crispy_field }}
+        </div>
+        <div class="form-group">
+            {{ form.country|as_crispy_field }}
+        </div>
+        <div class="form-group">
+            {{ form.image|as_crispy_field }}
+        </div>
+
         <button type="submit" class="btn btn-primary">Save changes</button>
         <a href="{% url 'e_waste_app:view_my_items' %}" class="btn btn-secondary">Cancel</a>
     </form>

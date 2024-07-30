@@ -279,26 +279,6 @@ class ContactUsView(FormView):
         return redirect('contactus')
 
 
-# def search_results(request):
-#     query = request.GET.get('name')
-#     category = request.GET.get('category')
-#
-#     filters = {}
-#     if query:
-#         filters['item_type__icontains'] = query
-#     if category:
-#         filters['category'] = category
-#
-#     results = RecycleItem.objects.filter(**filters)
-#
-#     return render(request, 'e_waste_app/search_results.html', {'results': results})
-
-
-# def item_details(request, item_id):
-#     item = get_object_or_404(RecycleItem, id=item_id)
-#     return render(request, 'e_waste_app/register_item_details.html', {'item': item})
-
-
 def feedback_view(request):
     if request.method == 'POST':
         form = FeedbackForm(request.POST)
@@ -424,7 +404,7 @@ def add_recycle_item(request):
                 ('country', 'Country')
             ]
 
-            if form.cleaned_data['user_profile_contact']:
+            if form.cleaned_data['use_profile_contact']:
                 # Check for missing fields in the profile
                 missing_fields = [label for field, label in fields if not getattr(current_member, field)]
 
@@ -440,7 +420,6 @@ def add_recycle_item(request):
                 missing_form_fields = [label for field, label in fields if not form.cleaned_data.get(field)]
 
                 if missing_form_fields:
-                    print("Missing fields: ", missing_form_fields)
                     form.add_error(None, "Please provide the missing contact information in the form.")
 
             if not form.errors:
@@ -556,7 +535,7 @@ def edit_item(request, pk):
             return redirect(reverse_lazy('e_waste_app:view_my_items'))
     else:
         form = EditRecycleItemForm(instance=item)
-    return render(request, 'e_waste_app/item_edit_form.html', {'form': form})
+    return render(request, 'e_waste_app/item_edit_form.html', {'form': form, 'user': item.user})
 
 
 def recycle_item_detail(request, pk):
