@@ -100,7 +100,12 @@
                                     <i class="fas fa-clock text-muted"></i><small class="text-muted">{{ item.created_at }}</small>
                                 </div>
                                 <div class="icon-text">
-                                    <i class="fas fa-map-marker-alt text-muted"></i><small class="text-muted">{{ item.address }}, {{ item.city }} {{ item.postal_code }}</small>
+                                    <i class="fas fa-map-marker-alt text-muted"></i>
+                                    {% if item.use_profile_contact %}
+                                        <small class="text-muted">{{ item.user.address }}, {{ item.user.city }} {{ item.user.postal_code }}</small>
+                                    {% else %}
+                                        <small class="text-muted">{{ item.address }}, {{ item.city }} {{ item.postal_code }}</small>
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>

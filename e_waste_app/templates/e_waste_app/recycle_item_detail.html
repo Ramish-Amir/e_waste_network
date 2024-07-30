@@ -27,11 +27,21 @@
         </div>
         <div class="col-md-6">
             <p><strong>Description:</strong> {{ item.description }}</p>
-            <p><strong>Category:</strong> {{ category_choices|get_item:item.category }}</p>
-            <p><strong>Condition:</strong> {{ condition_choices|get_item:item.condition }}</p>
+            <span class="badge badge-primary">{{ category_choices|get_item:item.category }}</span>
+            <span class="badge badge-secondary">{{ condition_choices|get_item:item.condition }}</span>
             <p><strong>Posted At:</strong> {{ item.created_at }}</p>
-            <p><strong>Address:</strong> {{ item.address }}, {{ item.city }} {{ item.postal_code }}</p>
-            <p><strong>Phone:</strong> {{ item.phone_number }}</p>
+            {% if not item.is_active %}
+            	<p class="badge badge-danger">Unavailable</p>
+            {% else %}
+                {% if item.use_profile_contact %}
+                    <p><strong>Address:</strong> {{ item.user.address }}, {{ item.user.city }} {{ item.user.postal_code }}</p>
+                    <p><strong>Phone:</strong> {{ item.user.phone_number }}</p>
+                {% else %}
+                    <p><strong>Address:</strong> {{ item.address }}, {{ item.city }} {{ item.postal_code }}</p>
+                    <p><strong>Phone:</strong> {{ item.phone_number }}</p>
+                {% endif %}
+            {% endif %}
+
         </div>
     </div>
             <a href="{% url 'e_waste_app:view_recycle_items' %}" class="btn btn-primary mt-4">Back to Search</a>
