@@ -27,9 +27,10 @@
         </div>
         <div class="col-md-6">
             <p><strong>Description:</strong> {{ item.description }}</p>
-            <span class="badge badge-primary">{{ category_choices|get_item:item.category }}</span>
-            <span class="badge badge-secondary">{{ condition_choices|get_item:item.condition }}</span>
+            <p class="badge badge-primary">{{ category_choices|get_item:item.category }}</p>
+            <p class="badge badge-secondary">{{ condition_choices|get_item:item.condition }}</p>
             <p><strong>Posted At:</strong> {{ item.created_at }}</p>
+            <p><strong>Posted by:</strong> {{ item.user.username }}</p>
             {% if not item.is_active %}
             	<p class="badge badge-danger">Unavailable</p>
             {% else %}

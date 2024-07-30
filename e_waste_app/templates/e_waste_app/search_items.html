@@ -100,6 +100,9 @@
                                     <i class="fas fa-clock text-muted"></i><small class="text-muted">{{ item.created_at }}</small>
                                 </div>
                                 <div class="icon-text">
+                                    <i class="bi bi-person-circle text-muted"></i><small class="text-muted">{{ item.user.username }}</small>
+                                </div>
+                                <div class="icon-text">
                                     <i class="fas fa-map-marker-alt text-muted"></i>
                                     {% if item.use_profile_contact %}
                                         <small class="text-muted">{{ item.user.address }}, {{ item.user.city }} {{ item.user.postal_code }}</small>
