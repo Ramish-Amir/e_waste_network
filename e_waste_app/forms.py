@@ -91,6 +91,8 @@ class ProfileForm(ModelForm):
         if user is not None:
             self.fields['username'].initial = user.username
             self.fields['email'].initial = user.email
+            self.fields['first_name'].initial = getattr(user, 'first_name', '')
+            self.fields['last_name'].initial = getattr(user, 'last_name', '')
             self.fields['phone_number'].initial = getattr(user, 'phone_number', '')
             self.fields['address'].initial = getattr(user, 'address', '')
             self.fields['city'].initial = getattr(user, 'city', '')
