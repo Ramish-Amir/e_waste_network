@@ -276,7 +276,7 @@ class ContactUsView(FormView):
     def form_valid(self, form):
         form.save()
         messages.success(self.request, 'Your message has been sent successfully!')
-        return redirect('contactus')
+        return redirect('e_waste_app:contactus')
 
 
 def feedback_view(request):
