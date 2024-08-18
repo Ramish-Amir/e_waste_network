@@ -50,6 +50,10 @@
     .icon-text i {
         margin-right: 8px;
     }
+    .new-text
+    {
+        color: green;
+    }
 </style>
 
 <div class="container">
@@ -90,7 +94,7 @@
 
                         <div class="card-body">
                             <h5 class="card-title">{{ item.item_type }}</h5>
-                            <p class="card-text truncate-multiline">{{ item.description }}</p>
+                            <p class="card-text truncate-multiline new-text">{{ item.description }}</p>
                             <span class="badge badge-primary">{{ category_choices|get_item:item.category }}</span>
                             <span class="badge badge-secondary">{{ condition_choices|get_item:item.condition }}</span>
                         </div>
