@@ -1,0 +1,17 @@
+version: '3'
+
+services:
+  web:
+    build: .
+    working_dir: /app
+    volumes:
+      - .:/app
+    command: python manage.py runserver 0.0.0.0:8000
+    ports:
+      - "8000:8000"
+    environment:
+      - NAME=World
+
+# Optional: Define volumes if you need to persist SQLite database file
+volumes:
+  sqlite_data: {}
