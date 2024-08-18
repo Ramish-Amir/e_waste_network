@@ -9,7 +9,8 @@ class AddRecycleItemForm(forms.ModelForm):
         model = RecycleItem
         fields = (
             'item_type', 'description', 'condition', 'category',
-            'image', 'use_profile_contact', 'phone_number', 'email', 'address', 'city', 'province', 'postal_code', 'country'
+            'image', 'use_profile_contact', 'phone_number', 'email', 'address', 'city', 'province', 'postal_code',
+            'country'
         )
         labels = {
             'use_profile_contact': "Use contact details from my profile (Leave the next fields blank if you choose "
@@ -19,8 +20,10 @@ class AddRecycleItemForm(forms.ModelForm):
 
 class SearchRecycleItemsForm(forms.Form):
     keyword = forms.CharField(required=False, label='')
-    category = forms.ChoiceField(choices=[('', 'Categories (All)')] + RecycleItem.CATEGORY_CHOICES, required=False, label='')
-    condition = forms.ChoiceField(choices=[('', 'Condition (All)')] + RecycleItem.CONDITION_CHOICES, required=False, label='')
+    category = forms.ChoiceField(choices=[('', 'Categories (All)')] + RecycleItem.CATEGORY_CHOICES, required=False,
+                                 label='')
+    condition = forms.ChoiceField(choices=[('', 'Condition (All)')] + RecycleItem.CONDITION_CHOICES, required=False,
+                                  label='')
     location = forms.CharField(required=False, label='')
     sort_by = forms.ChoiceField(
         choices=[
@@ -37,7 +40,8 @@ class SearchRecycleItemsForm(forms.Form):
         self.fields['keyword'].widget.attrs.update({'placeholder': 'Enter search keyword'})
         self.fields['category'].widget.attrs.update({'placeholder': 'Category'})
         self.fields['condition'].widget.attrs.update({'placeholder': 'Condition'})
-        self.fields['location'].widget.attrs.update({'placeholder': 'Location (postal code, city, province, country...)'})
+        self.fields['location'].widget.attrs.update(
+            {'placeholder': 'Location (postal code, city, province, country...)'})
         self.fields['sort_by'].widget.attrs.update({'placeholder': 'Sort By'})
 
         self.helper = FormHelper()
@@ -80,11 +84,16 @@ class EditRecycleItemForm(forms.ModelForm):
                 self.fields[field].required = True
 
 
-
 class HomepageSearchForm(forms.Form):
     keyword = forms.CharField(required=False, label='')
+
     category = forms.ChoiceField(choices=[('', 'Categories (All)')] + RecycleItem.CATEGORY_CHOICES, required=False,
                                  label='')
+    date_from = forms.DateField(
+        required=False,
+        widget=forms.DateInput(attrs={'type': 'date', 'class': 'search-home-input'}),
+        label='Date From'
+    )
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

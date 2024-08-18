@@ -72,7 +72,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-
     'e_waste_app.middleware.TrackVisitDurationMiddleware',
     'e_waste_app.middleware.TrackUserLoginMiddleware'
 ]
